@@ -12,13 +12,13 @@
 			var img = new Image();
 			img.onload = function () {
 				var imd = new g.ImageData(img);
-				imd.getRChannel().getImage(function (image) {
+				imd.getR().getImage(function (image) {
 					document.body.appendChild(image);
 				});
-				imd.getGChannel().getImage(function (image) {
+				imd.getG().getImage(function (image) {
 					document.body.appendChild(image);
 				});
-				imd.getBChannel().getImage(function (image) {
+				imd.getB().getImage(function (image) {
 					document.body.appendChild(image);
 				});
 			};

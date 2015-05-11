@@ -74,7 +74,7 @@ var gonzalez = {};
 		imd.data = imd.native.data;
 	}
 
-	function getPixelArray(imd, l, t, w, h, callback) {
+	function getPixels(imd, l, t, w, h, callback) {
 		l = l || 0;
 		t = t || 0;
 		w = w || (imd.width - l);
@@ -114,7 +114,7 @@ var gonzalez = {};
 		return pixels;
 	}
 	
-	function setPixelArray(imd, pixels, callback) {
+	function setPixels(imd, pixels, callback) {
 		var data = imd.data;
 		for(var y = pixels.top; y < pixels.bottom; y++) {
 			for(var x = pixels.left; x < pixels.right; x++) {
@@ -170,20 +170,8 @@ var gonzalez = {};
 		return {w: this.width, h: this.height};
 	};
 
-	g.ImageData.prototype.setSize = function (w, h) {
-		if(w <= 0 || h <= 0) { throw new Error('width and height should be positive integer.'); }
-		var oldNimd = this.native;
-		var nw = (this.width > w) ? w : this.width;
-		var nh = (this.height > h) ? h : this.height;
-		setImageDataSize(this, w, h);
-		var ctx = this.ctx;
-		ctx.putImageData(oldNimd, 0, 0, 0, 0, nw, nh);
-		this.native = ctx.getImageData(0, 0, w, h);
-		this.data = this.native.data;
-	};
-
-	g.ImageData.prototype.getPixelArray = function (l, t, w, h) {
-		return getPixelArray(this, l, t, w, h, function (p, data, now) {
+	g.ImageData.prototype.getPixels = function (l, t, w, h) {
+		return getPixels(this, l, t, w, h, function (p, data, now) {
 			p.r = data[now];
 			p.g = data[now+1];
 			p.b = data[now+2];
@@ -191,17 +179,17 @@ var gonzalez = {};
 		});
 	}
 
-	g.ImageData.prototype.setPixelArray = function (pixels) {
-		setPixelArray(this, pixels, function (p, data, now) {
+	g.ImageData.prototype.setPixels = function (pixels) {
+		setPixels(this, pixels, function (p, data, now) {
 			data[now] = p.r;
 			data[now+1] = p.g;
 			data[now+2] = p.b;
 			data[now+3] = p.a;
 		});
 	}
-
-	g.ImageData.prototype.getRChannel = function () {
-		var imd = g.ImageData(this);
+	
+	g.ImageData.prototype.getR = function () {
+		var imd = new g.ImageData(this);
 		var data = imd.data;
 		for(var i = 0; i < data.length; i += 4) {
 			data[i+1] = data[i+2] = 0;
@@ -210,8 +198,8 @@ var gonzalez = {};
 		return imd;
 	};
 
-	g.ImageData.prototype.getGChannel = function () {
-		var imd = g.ImageData(this);
+	g.ImageData.prototype.getG = function () {
+		var imd = new g.ImageData(this);
 		var data = imd.data;
 		for(var i = 0; i < data.length; i += 4) {
 			data[i] = data[i+2] = 0;
@@ -220,8 +208,8 @@ var gonzalez = {};
 		return imd;
 	};
 
-	g.ImageData.prototype.getBChannel = function () {
-		var imd = g.ImageData(this);
+	g.ImageData.prototype.getB = function () {
+		var imd = new g.ImageData(this);
 		var data = imd.data;
 		for(var i = 0; i < data.length; i += 4) {
 			data[i] = data[i+1] = 0;
@@ -252,9 +240,9 @@ var gonzalez = {};
 		}
 		function transform(self) {
 			if(typeof intensity === 'function') {
-				var ps = g.ImageData.prototype.getPixelArray.call(self);
+				var ps = g.ImageData.prototype.getPixels.call(self);
 				intensity(ps);
-				self.setPixelArray(ps);
+				self.setPixels(ps);
 			} else {
 				defaultIntensity(self.native);
 				self.ctx.putImageData(self.native, 0, 0);
@@ -284,15 +272,15 @@ var gonzalez = {};
 	g.GrayImageData.prototype = Object.create(g.ImageData.prototype);
 	g.GrayImageData.prototype.constructor = g.GrayImageData;
 
-	g.GrayImageData.prototype.getPixelArray = function (l, t, w, h) {
-		return getPixelArray(this, l, t, w, h, function (p, data, now) {
+	g.GrayImageData.prototype.getPixels = function (l, t, w, h) {
+		return getPixels(this, l, t, w, h, function (p, data, now) {
 			p.l = data[now];
 			p.a = data[now+3];
 		});
 	}
 
-	g.GrayImageData.prototype.setPixelArray = function (pixels) {
-		setPixelArray(this, pixels, function (p, data, now) {
+	g.GrayImageData.prototype.setPixels = function (pixels) {
+		setPixels(this, pixels, function (p, data, now) {
 			data[now] = data[now+1] = data[now+2] = p.l;
 			data[now+3] = p.a;
 		});
@@ -320,9 +308,9 @@ var gonzalez = {};
 		function transform(self) {
 			if(typeof threshold === 'function') {
 				console.log('threshold');
-				var ps = g.GrayImageData.prototype.getPixelArray.call(self);
+				var ps = g.GrayImageData.prototype.getPixels.call(self);
 				threshold(ps);
-				self.setPixelArray(ps);
+				self.setPixels(ps);
 			} else {
 				defaultThreshold(self.native);
 				self.ctx.putImageData(self.native, 0, 0);
@@ -352,8 +340,8 @@ var gonzalez = {};
 	g.BinaryImageData.prototype = Object.create(g.GrayImageData.prototype);
 	g.BinaryImageData.prototype.constructor = g.BinaryImageData;
 
-	g.BinaryImageData.prototype.setPixelArray = function (pixels) {
-		setPixelArray(this, pixels, function (p, data, now) {
+	g.BinaryImageData.prototype.setPixels = function (pixels) {
+		setPixels(this, pixels, function (p, data, now) {
 			if(p.l === 255 || p.l === 0) {
 				data[now] = data[now+1] = data[now+2] = p.l;
 				data[now+3] = p.a;

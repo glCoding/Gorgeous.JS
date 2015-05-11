@@ -4,10 +4,12 @@
   "description": "A JavaScript Library for Digital Image Processing.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "test": "node index.js"
   },
   "dependencies": {
-    "express": "~4.9.x"
+    "express": "~4.9.x",
+    "requirejs": "2.1.15",
+    "grunt": "0.4.5"
   },
   "engines": {
     "node": "0.12.2"
