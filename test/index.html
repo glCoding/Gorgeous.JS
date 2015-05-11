@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<title>Gonzalez.JS Test</title>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<h1>Gonzalez.JS Test</h1>
+		<h3>Original Image</h3>
+		<img id="img1" src="./cute.jpg" alt="image" />
+		<h3>Original Canvas</h3>
+		<canvas id="canvas1"></canvas>
+		<script src="./gonzalez.js"></script>
+		<script>
+			var g = gonzalez;
+			window.onload = function() {
+				test1();
+			};
+			function log(tip) {
+				var h3 = document.createElement('h3');
+				h3.innerHTML = tip;
+				document.body.appendChild(h3);
+				console.log(tip);
+				for(var i = 1; i < arguments.length; i++) {
+					var h4 = document.createElement('h4');
+					h4.innerHTML = arguments[i];
+					document.body.appendChild(h4);
+					console.log(arguments[i]);
+				}
+			}
+			function test1() {
+				var img1 = document.getElementById('img1');
+				var canvas1 = document.getElementById('canvas1');
+				canvas1.width = img1.width;
+				canvas1.height = img1.height;
+				var ctx1 = canvas1.getContext('2d');
+				ctx1.drawImage(img1, 0, 0, img1.width, img1.height);
+				var nimd1 = ctx1.getImageData(0, 0, canvas1.width, canvas1.height);
+				var src1 = 'whatever.jpg';
+				
+				log('I. Test g.ImageData');
+
+				var imdCanvas = g.ImageData(canvas1);
+				var imdContext = g.ImageData(ctx1);
+				log('Create g.ImageData from canvas.', imdCanvas);
+				log('Create g.ImageData from canvas context.', imdContext);
+				
+				var imdString = g.ImageData(src1, function (imd) {
+					imd.getImage(function (img) {
+						log('Create g.ImageData from image source address.', imd);
+						document.body.appendChild(img);
+						afterImdString();
+					});
+				});
+				function afterImdString() {
+				    var imdImage = g.ImageData(img1);
+				    log('Create g.ImageData from Image.', imdImage);
+
+				    var imdNative = g.ImageData(nimd1);
+				    log('Create g.ImageData from native ImageData.', imdNative);
+
+				    var imdAnother = g.ImageData(imdNative);
+				    log('Create g.ImageData from another g.ImageData.', imdAnother);
+
+				    var dataURLAnother = imdAnother.getDataURL();
+				    log('dataURL of g.ImageData Object:', dataURLAnother.slice(0, 50));
+
+				    var imgGet = imdAnother.getImage(function (img) {
+				        log('Get Image from g.ImageData Object:');
+				        document.body.appendChild(img);
+				    });
+
+				    var imdSize1 = imdAnother.getSize();
+				    log('Get size of g.ImageData Object:', 'w: ' + imdSize1.w + ', h:' + imdSize1.h);
+
+				    imdNative.setSize(100, 160);
+				    imdNative.getImage(function (img) {
+				        log('Set g.ImageData Object\'s size:');
+				        document.body.appendChild(img);
+				    });
+
+				    imdImage.setSize(300, 160);
+				    imdImage.getImage(function (img) {
+				        log('Set g.ImageData Object\'s size:');
+				        document.body.appendChild(img);
+				    });
+
+				    var src2 = 'color.jpg';
+				    var gimdString = g.GrayImageData(src2, null, function (gid) {
+				        gid.getImage(function (img) {
+							log('II. Test g.GrayImageData');
+				            log('Get gray level image from source address.');
+				            document.body.appendChild(img);
+				            afterGimdString();
+				        });
+				    });
+
+				    function afterGimdString() {
+				        var gimdImageData = new g.GrayImageData(imdImage.native, function(ps) {
+							ps.each(function (p) {
+								var max = (p.r > p.g)	?	((p.r > p.b) ? p.r : p.b)
+														:	((p.g > p.b) ? p.g : p.b);
+								p.l = max;
+							});
+						});
+				        gimdImageData.getImage(function (img) {
+				            log('Get gray level image from native ImageData(max):');
+				            document.body.appendChild(img);
+				        });
+						
+						var gimdIMD = new g.GrayImageData(imdImage, function (ps) {
+							ps.each(function (p) {
+								var min = (p.r < p.g)	?	((p.r < p.b) ? p.r : p.b)
+														:	((p.g < p.b) ? p.g : p.b);
+								p.l = min;
+							});
+						});
+				        gimdIMD.getImage(function (img) {
+				            log('Get gray level image from g.ImageData(min):', gimdIMD);
+				            document.body.appendChild(img);
+				        });
+
+						var gimdCtx = new g.GrayImageData(imdImage.ctx, function (ps) {
+							ps.each(function (p, x, y) {
+								p.l = (p.r + p.g + p.b) / 3;
+							});
+						});
+				        gimdCtx.getImage(function (img) {
+				            log('Get gray level image from canvas(average):', gimdCtx);
+				            document.body.appendChild(img);
+				        });
+						
+						var gimdAnother = g.GrayImageData(gimdCtx);
+				        gimdAnother.getImage(function (img) {
+				            log('Get gray level image from another g.GrayImageData(default):', gimdAnother);
+				            document.body.appendChild(img);
+				        });
+						
+						var gimdImage = g.GrayImageData(img1);
+						gimdImage.getImage(function (img) {
+							log('Get gray level image from existing image.', gimdImage);
+							document.body.appendChild(img);
+						});
+
+				        var gimdCanvas = g.GrayImageData(imdImage.ctx.canvas);
+				        gimdCanvas.getImage(function (img) {
+				            log('Get gray level image from context:', gimdCanvas);
+				            document.body.appendChild(img);
+				        });
+
+				        test2();
+				    }
+				}
+			};
+		</script>
+		<script>
+            function test2() {
+				var src1 = 'whatever.jpg';
+				var bidString = g.BinaryImageData(src1, null, function (bid) {
+				    bid.getImage(function (img) {
+				        log('III. Test g.BinaryImageData');
+						log('Create binary image from source address.', bid);
+						document.body.appendChild(img);
+						afterBidString();
+					});
+				});
+				function afterBidString() {
+					var img1 = document.getElementById('img1');
+					var canvas1 = document.getElementById('canvas1');
+					var ctx1 = canvas1.getContext('2d');
+					
+					var bidImage = g.BinaryImageData(img1);
+					bidImage.getImage(function (img) {
+						log('Create binary image from existing image:', bidImage);
+						document.body.appendChild(img);
+					});
+					
+					var bidNative = g.BinaryImageData(bidString.native);
+					bidNative.getImage(function (img) {
+						log('Create binary image from native ImageData:', bidNative);
+						document.body.appendChild(img);
+					});
+					
+					var bidAnother = g.BinaryImageData(bidString);
+					bidAnother.getImage(function (img) {
+						log('Create binary image from another g.BinaryImageData:', bidAnother);
+						document.body.appendChild(img);
+					});
+					
+					var bidColor = g.BinaryImageData(g.ImageData(img1));
+					bidColor.getImage(function (img) {
+						log('Create binary image from g.ImageData:', bidColor);
+						document.body.appendChild(img);
+					});
+					
+					var bidGray = g.BinaryImageData(g.GrayImageData(img1));
+					bidGray.getImage(function (img) {
+						log('Create binary image from g.GrayImageData:', bidGray);
+						document.body.appendChild(img);
+					});
+					
+					var bidCanvas = g.BinaryImageData(canvas1);
+					bidCanvas.getImage(function (img) {
+						log('Create binary image from Canvas:', bidCanvas);
+						document.body.appendChild(img);
+					});
+					
+					var bidCtx = g.BinaryImageData(ctx1);
+					bidCtx.getImage(function (img) {
+						log('Create binary image from Context:', bidCtx);
+						document.body.appendChild(img);
+						test3();
+					});
+				}
+			};
+		</script>
+		<script>
+			function test3() {
+				log('IV. Test Pixel Operations');
+				var canvas = document.createElement('canvas');
+				var ctx = canvas.getContext('2d');
+				canvas.width = 1000;
+				canvas.height = 500;
+				ctx.fillStyle = '#010203';
+				ctx.fillRect(0, 0, 500, 250);
+				ctx.fillStyle = '#ff0000';
+				ctx.fillRect(500, 0, 500, 250);
+				ctx.fillStyle = '#00ff00';
+				ctx.fillRect(0, 250, 500, 250);
+				ctx.fillStyle = '#0000ff';
+				ctx.fillRect(500, 250, 500, 250);
+				var imd = g.ImageData(ctx);
+				imd.getImage(function (img) {
+					log('Original Image');
+					document.body.appendChild(img);
+					getSetColor();
+				});
+				function getSetColor() {
+					var pixels = imd.getPixelArray(200, 200);
+					pixels.each(function (p, x, y) {
+						if(x < 700 && y < 300) {
+							p.r = 124;
+							p.g = 42;
+							p.b = 210;
+						}
+					});
+					imd.setPixelArray(pixels);
+					imd.getImage(function (img) {
+						log('Get pixels array, change its value, and put it to g.ImageData.');
+						document.body.appendChild(img);
+						getSetGray();
+					});
+				}
+				function getSetGray() {
+					var gimd = new g.GrayImageData(ctx);
+					gimd.getImage(function (img) {
+						log('Original gray level image.');
+						document.body.appendChild(img);
+						var ps = gimd.getPixelArray(300, 100);
+						for(var y = ps.top; y < ps.bottom; y++) {
+							for(var x = ps.left; x < ps.right; x++) {
+								ps[x][y].l = 200;
+								ps[x][y].a = 100;
+							}
+						}
+						gimd.setPixelArray(ps);
+						gimd.getImage(function (img) {
+							log('Gray level image changed by pixel operations.');
+							document.body.appendChild(img);
+							getSetBinary();
+						});
+					});					
+				}
+				function getSetBinary() {
+					var bimd = new g.BinaryImageData(ctx, function (ps) {
+						ps.each(function (p) {
+							p.l = (p.l > 127) ? 0 : 255;
+						});
+					});
+					bimd.getImage(function (img) {
+						log('Original binary image.');
+						document.body.appendChild(img);
+						var ps = bimd.getPixelArray();
+						ps.each(function (p) {
+							p.l = 255 - p.l;
+						});
+						bimd.setPixelArray(ps);
+						bimd.getImage(function (img) {
+							log('Binary image changed by pixel operations.');
+							document.body.appendChild(img);
+							test4();
+						});
+					});
+				}
+			}
+		</script>
+		<script>
+			function test4() {
+				log('V. RGB Channel Test');
+				var canvas = document.getElementById('canvas1');
+				var ctx = canvas.getContext('2d');
+				var imd = new g.ImageData(canvas);
+				var imdRChannel = imd.getRChannel();
+				imdRChannel.getImage(function (img) {
+					document.body.appendChild(img);
+				});
+				var imdGChannel = imd.getGChannel();
+				imdGChannel.getImage(function (img) {
+					document.body.appendChild(img);
+				});
+				var imdBChannel = imd.getBChannel();
+				imdBChannel.getImage(function (img) {
+					document.body.appendChild(img);
+				});
+			}
+		</script>
+	</body>
+</html>
