@@ -2,5 +2,10 @@
   "name": "Gonzalez.JS",
   "description": "A JavaScript Library for Digital Image Processing.",
   "repository": "https://github.com/foolyou/Gonzalez.JS",
-  "keywords": ["JavaScript", "Image", "Processing", "Library"]
+  "keywords": [
+    "JavaScript",
+    "Image",
+    "Processing",
+    "Library"
+  ]
 }

@@ -43,7 +43,7 @@ var gonzalez = {};
 		var img = new Image();
 		img.onload = function () {
 			initImageDataFromImage(imd, img);
-			if(typeof callback === 'function') {
+			if (typeof callback === 'function') {
 				callback(imd);
 			}
 		};
@@ -79,14 +79,14 @@ var gonzalez = {};
 		t = t || 0;
 		w = w || (imd.width - l);
 		h = h || (imd.height - t);
-		if(l < 0 || t < 0 || l > imd.width || t > imd.height
-		|| w < 0 || h < 0 || l + w > imd.width || t + h > imd.height) {
+		if (l < 0 || t < 0 || l > imd.width || t > imd.height
+			|| w < 0 || h < 0 || l + w > imd.width || t + h > imd.height) {
 			throw new Error('range error');
 		}
 		var pixels = [];
-		var	r = w + l,
+		var r = w + l,
 			b = h + t;
-		for(var i = l; i < r; i++) {
+		for (var i = l; i < r; i++) {
 			pixels[i] = [];
 		}
 		var data = imd.data;
@@ -97,15 +97,15 @@ var gonzalez = {};
 		pixels.right = l + w;
 		pixels.bottom = t + h;
 		pixels.each = function (opr) {
-			for(var y = this.top; y < this.bottom; y++) {
-				for(var x = this.left; x < this.right; x++) {
+			for (var y = this.top; y < this.bottom; y++) {
+				for (var x = this.left; x < this.right; x++) {
 					opr(this[x][y], x, y);
 				}
 			}
 			return this;
 		};
-		for(var y = t; y < b; y++) {
-			for(var x = l; x < r; x++) {
+		for (var y = t; y < b; y++) {
+			for (var x = l; x < r; x++) {
 				pixels[x][y] = {};
 				var now = (y * imd.width + x) * 4;
 				callback(pixels[x][y], data, now);
@@ -113,11 +113,11 @@ var gonzalez = {};
 		}
 		return pixels;
 	}
-	
+
 	function setPixels(imd, pixels, callback) {
 		var data = imd.data;
-		for(var y = pixels.top; y < pixels.bottom; y++) {
-			for(var x = pixels.left; x < pixels.right; x++) {
+		for (var y = pixels.top; y < pixels.bottom; y++) {
+			for (var x = pixels.left; x < pixels.right; x++) {
 				var now = 4 * (y * imd.width + x);
 				callback(pixels[x][y], data, now);
 			}
@@ -126,24 +126,24 @@ var gonzalez = {};
 		imd.native = imd.ctx.getImageData(0, 0, imd.width, imd.height);
 		imd.data = imd.native.data;
 	}
-	
+
 	g.ImageData = function (src, callback) {
-		if(!(this instanceof g.ImageData)) {
+		if (!(this instanceof g.ImageData)) {
 			return new g.ImageData(src, callback);
 		}
-		if(src instanceof HTMLCanvasElement) {
+		if (src instanceof HTMLCanvasElement) {
 			initImageDataFromCanvas(this, src);
-		} else if(src instanceof CanvasRenderingContext2D) {
+		} else if (src instanceof CanvasRenderingContext2D) {
 			initImageDataFromContext(this, src);
 		} else {
 			makeBlankImageData(this);
-			if(typeof src === 'string') {
+			if (typeof src === 'string') {
 				initImageDataFromString(this, src, callback);
-			} else if(src instanceof Image) {
+			} else if (src instanceof Image) {
 				initImageDataFromImage(this, src);
-			} else if(src instanceof g.ImageData) {
+			} else if (src instanceof g.ImageData) {
 				initImageDataFromAnotherImageData(this, src);
-			} else if(src instanceof ImageData) {
+			} else if (src instanceof ImageData) {
 				initImageDataFromNativeImageData(this, src);
 			} else {
 				throw new Error('Need a source to create g.ImageData.');
@@ -158,7 +158,7 @@ var gonzalez = {};
 	g.ImageData.prototype.getImage = function (callback) {
 		var img = new Image();
 		img.onload = function () {
-			if(typeof callback === 'function') {
+			if (typeof callback === 'function') {
 				callback(img);
 			}
 		};
@@ -167,32 +167,32 @@ var gonzalez = {};
 	};
 
 	g.ImageData.prototype.getSize = function () {
-		return {w: this.width, h: this.height};
+		return { w: this.width, h: this.height };
 	};
 
 	g.ImageData.prototype.getPixels = function (l, t, w, h) {
 		return getPixels(this, l, t, w, h, function (p, data, now) {
 			p.r = data[now];
-			p.g = data[now+1];
-			p.b = data[now+2];
-			p.a = data[now+3];
+			p.g = data[now + 1];
+			p.b = data[now + 2];
+			p.a = data[now + 3];
 		});
 	}
 
 	g.ImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
 			data[now] = p.r;
-			data[now+1] = p.g;
-			data[now+2] = p.b;
-			data[now+3] = p.a;
+			data[now + 1] = p.g;
+			data[now + 2] = p.b;
+			data[now + 3] = p.a;
 		});
 	}
-	
+
 	g.ImageData.prototype.getR = function () {
 		var imd = new g.ImageData(this);
 		var data = imd.data;
-		for(var i = 0; i < data.length; i += 4) {
-			data[i+1] = data[i+2] = 0;
+		for (var i = 0; i < data.length; i += 4) {
+			data[i + 1] = data[i + 2] = 0;
 		}
 		imd.ctx.putImageData(imd.native, 0, 0);
 		return imd;
@@ -201,8 +201,8 @@ var gonzalez = {};
 	g.ImageData.prototype.getG = function () {
 		var imd = new g.ImageData(this);
 		var data = imd.data;
-		for(var i = 0; i < data.length; i += 4) {
-			data[i] = data[i+2] = 0;
+		for (var i = 0; i < data.length; i += 4) {
+			data[i] = data[i + 2] = 0;
 		}
 		imd.ctx.putImageData(imd.native, 0, 0);
 		return imd;
@@ -211,35 +211,35 @@ var gonzalez = {};
 	g.ImageData.prototype.getB = function () {
 		var imd = new g.ImageData(this);
 		var data = imd.data;
-		for(var i = 0; i < data.length; i += 4) {
-			data[i] = data[i+1] = 0;
+		for (var i = 0; i < data.length; i += 4) {
+			data[i] = data[i + 1] = 0;
 		}
 		imd.ctx.putImageData(imd.native, 0, 0);
 		return imd;
 	};
 
 	g.GrayImageData = function (src, intensity, callback) {
-		if(!(this instanceof g.GrayImageData)) {
+		if (!(this instanceof g.GrayImageData)) {
 			return new g.GrayImageData(src, intensity, callback);
 		}
 		function defaultIntensity(n) {
 			function mm(arr3) {
-				var result = {max: arr3[0], min: arr3[0]};
-				for(var i = 1; i < 3; i++) {
-					if(arr3[i] < result.min) { result.min = arr3[i]; }
-					if(arr3[i] > result.max) { result.max = arr3[i]; }
+				var result = { max: arr3[0], min: arr3[0] };
+				for (var i = 1; i < 3; i++) {
+					if (arr3[i] < result.min) { result.min = arr3[i]; }
+					if (arr3[i] > result.max) { result.max = arr3[i]; }
 				}
 				return result;
 			}
 			var data = n.data;
-			for(var i = 0; i < data.length; i += 4) {
-				var mmr = mm([data[i], data[i+1], data[i+2]]);
+			for (var i = 0; i < data.length; i += 4) {
+				var mmr = mm([data[i], data[i + 1], data[i + 2]]);
 				var lightness = (mmr.max + mmr.min) * 0.5;
-				data[i] = data[i+1] = data[i+2] = lightness;
+				data[i] = data[i + 1] = data[i + 2] = lightness;
 			}
 		}
 		function transform(self) {
-			if(typeof intensity === 'function') {
+			if (typeof intensity === 'function') {
 				var ps = g.ImageData.prototype.getPixels.call(self);
 				intensity(ps);
 				self.setPixels(ps);
@@ -248,20 +248,20 @@ var gonzalez = {};
 				self.ctx.putImageData(self.native, 0, 0);
 			}
 		}
-		if(src instanceof g.GrayImageData) {
+		if (src instanceof g.GrayImageData) {
 			g.ImageData.call(this, src);
-		} else if(typeof src === 'string') {
+		} else if (typeof src === 'string') {
 			var self = this;
 			g.ImageData.call(this, src, function () {
 				transform(self);
-				if(typeof callback === 'function') {
+				if (typeof callback === 'function') {
 					callback(self);
 				}
 			});
-		} else if(src instanceof HTMLCanvasElement || src instanceof CanvasRenderingContext2D) {
+		} else if (src instanceof HTMLCanvasElement || src instanceof CanvasRenderingContext2D) {
 			g.GrayImageData.call(this, new g.ImageData(src), intensity);
 		} else {
-			if(src instanceof g.ImageData || src instanceof Image || src instanceof ImageData) {
+			if (src instanceof g.ImageData || src instanceof Image || src instanceof ImageData) {
 				g.ImageData.call(this, src);
 			} else {
 				throw new Error('Need a source to create g.GrayImageData.');
@@ -275,38 +275,38 @@ var gonzalez = {};
 	g.GrayImageData.prototype.getPixels = function (l, t, w, h) {
 		return getPixels(this, l, t, w, h, function (p, data, now) {
 			p.l = data[now];
-			p.a = data[now+3];
+			p.a = data[now + 3];
 		});
 	}
 
 	g.GrayImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
-			data[now] = data[now+1] = data[now+2] = p.l;
-			data[now+3] = p.a;
+			data[now] = data[now + 1] = data[now + 2] = p.l;
+			data[now + 3] = p.a;
 		});
 	};
 
 	g.BinaryImageData = function (src, threshold, callback) {
-		if(!(this instanceof g.BinaryImageData)) {
+		if (!(this instanceof g.BinaryImageData)) {
 			return new g.BinaryImageData(src, threshold, callback);
 		}
 		function defaultThreshold(n) {
 			var data = n.data;
 			var sum = 0;
-			for(var i = 0; i < data.length; i += 4) {
+			for (var i = 0; i < data.length; i += 4) {
 				sum += data[i];
 			}
 			var average = sum / data.length * 4;
-			for(var i = 0; i < data.length; i += 4) {
-				if(data[i] <= average) {
-					data[i] = data[i+1] = data[i+2] = 0;
+			for (var i = 0; i < data.length; i += 4) {
+				if (data[i] <= average) {
+					data[i] = data[i + 1] = data[i + 2] = 0;
 				} else {
-					data[i] = data[i+1] = data[i+2] = 255;
+					data[i] = data[i + 1] = data[i + 2] = 255;
 				}
 			}
 		}
 		function transform(self) {
-			if(typeof threshold === 'function') {
+			if (typeof threshold === 'function') {
 				console.log('threshold');
 				var ps = g.GrayImageData.prototype.getPixels.call(self);
 				threshold(ps);
@@ -316,20 +316,20 @@ var gonzalez = {};
 				self.ctx.putImageData(self.native, 0, 0);
 			}
 		}
-		if(src instanceof g.BinaryImageData) {
+		if (src instanceof g.BinaryImageData) {
 			g.GrayImageData.call(this, src);
-		} else if(typeof src === 'string') {
+		} else if (typeof src === 'string') {
 			var self = this;
 			g.GrayImageData.call(this, src, null, function () {
 				transform(self);
-				if(typeof callback === 'function') {
+				if (typeof callback === 'function') {
 					callback(self);
 				}
 			});
-		} else if(src instanceof HTMLCanvasElement || src instanceof CanvasRenderingContext2D) {
+		} else if (src instanceof HTMLCanvasElement || src instanceof CanvasRenderingContext2D) {
 			g.BinaryImageData.call(this, new g.GrayImageData(src), threshold);
 		} else {
-			if(src instanceof g.ImageData || src instanceof Image || src instanceof ImageData) {
+			if (src instanceof g.ImageData || src instanceof Image || src instanceof ImageData) {
 				g.GrayImageData.call(this, src);
 			} else {
 				throw new Error('Need a source to create g.BinaryImageData.');
@@ -342,13 +342,13 @@ var gonzalez = {};
 
 	g.BinaryImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
-			if(p.l === 255 || p.l === 0) {
-				data[now] = data[now+1] = data[now+2] = p.l;
-				data[now+3] = p.a;
+			if (p.l === 255 || p.l === 0) {
+				data[now] = data[now + 1] = data[now + 2] = p.l;
+				data[now + 3] = p.a;
 			} else {
 				throw new Error('binary image only accepts 0 or 255 as lightness.');
 			}
 		});
 	}
 
-}());
+} ());
