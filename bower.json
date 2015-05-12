@@ -1,0 +1,22 @@
+{
+  "name": "Gonzalez.JS",
+  "main": "/build/gonzalez.min.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Foolyou/Gonzalez.JS",
+  "authors": [
+    "foolyou <foolyou.chen@outlook.com>"
+  ],
+  "description": "A JavaScript Library for Digital Image Processing.",
+  "keywords": [
+    "JavaScript",
+    "Digital",
+    "Image",
+    "Process",
+    "Processing"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "bower_components"
+  ]
+}

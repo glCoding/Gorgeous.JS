@@ -4,7 +4,9 @@
   "description": "A JavaScript Library for Digital Image Processing.",
   "main": "index.js",
   "scripts": {
-    "test": "npm install --save-dev && grunt && node index.js"
+    "start": "node index.js",
+    "build": "npm install --save-dev && grunt build",
+    "test": "npm install --save-dev && grunt test"
   },
   "dependencies": {
     "express": "4.12.3"
