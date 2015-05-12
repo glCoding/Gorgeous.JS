@@ -1,0 +1,18 @@
+#head-title {
+	text-align: center;
+}
+
+#head-description {
+	text-align: center;
+}
+
+div.test {
+	border: 1px #0B0B0B solid;
+	margin: 4px 2px;
+	padding: 0 4px;
+}
+
+h3.log {
+	margin: 4px;
+	background-color: burlywood;
+}

@@ -3,11 +3,63 @@
 	<head>
 		<title>Gorgeous.JS</title>
 		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
 	</head>
 	<body>
-		<h1 style="text-align: center">Gorgeous.JS</h1>
-		<h2 style="border-bottom: 1px solid #B4B4B4; text-align: center">A JavaScript Library for Digital Image Processing.</h2>
+		<h1 id="head-title">Gorgeous.JS</h1>
+		<h2 id="head-description">A JavaScript Library for Digital Image Processing.</h2>
 		<script src="js/gorgeous.min.js"></script>
-		<script src="js/test.js"></script>
+		<script src="js/test-tools.js"></script>
+		<script>
+			Test('Waterfall done correctly', function (test) {
+				waterfall([
+					function (callback) {
+						setTimeout(function () {
+							test.log('2000 ms');
+							callback(null, 1000);
+						}, 2000);
+					},
+					function (time, callback) {
+						setTimeout(function () {
+							test.log(time + ' ms');
+							callback(null, 'hello,world', 1500);
+						}, time);
+					}
+				], function (err, text, time) {
+					if(err) {
+						test.log(err);
+					} else {
+						setTimeout(function () {
+							test.log(time + ' ms');
+						}, time);
+					}
+				});
+			});
+			
+			Test('Waterfall error', function (test) {
+				waterfall([
+					function (callback) {
+						setTimeout(function () {
+							test.log('2000 ms');
+							callback(new Error('test error'));
+						}, 2000);
+					},
+					function (time, callback) {
+						setTimeout(function () {
+							test.log(time + ' ms');
+							callback(null, 'hello,world', 1500);
+						}, time);
+					}
+				], function (err, text, time) {
+					if(err) {
+						test.log(err);
+					} else {
+						setTimeout(function () {
+							test.log(time + ' ms');
+						}, time);
+					}
+				});
+			});
+		</script>
 	</body>
 </html>
