@@ -1,9 +1,11 @@
-var gonzalez = gonzalez || {};
-var g = gonzalez;
+(function () {
+	'use strict';
+	var g = gonzalez;
 
-g.loadImage = function (src, callback) {
-	var img = new Image();
-	img.onload = callback;
-	img.src = src;
-	return img;
-};
+	g.loadImage = function (src, callback) {
+		var img = new Image();
+		img.onload = callback;
+		img.src = src;
+		return img;
+	};
+} ());
