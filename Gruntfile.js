@@ -26,7 +26,7 @@ module.exports = function(grunt) {
         srcPrefix: 'build',
         destPrefix: 'test/js'
       },
-      test: {
+      build: {
         files: {
           'gonzalez.min.js': 'gonzalez.min.js'
         }
@@ -40,8 +40,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-npmcopy');
 
-  grunt.registerTask('build', ['concat', 'uglify', 'clean']);
-  grunt.registerTask('test', ['build', 'npmcopy']);
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('build', ['concat', 'uglify', 'clean', 'npmcopy']);
+  grunt.registerTask('default', 'build');
 
 };
