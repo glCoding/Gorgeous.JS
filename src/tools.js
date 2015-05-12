@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-	var g = gonzalez;
+	var g = gorgeous;
 
 	g.loadImage = function (src, callback) {
 		var img = new Image();

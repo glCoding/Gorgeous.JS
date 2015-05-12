@@ -1,8 +1,8 @@
 {
-  "name": "Gonzalez.JS",
-  "main": "/build/gonzalez.min.js",
+  "name": "gorgeous.JS",
+  "main": "/build/gorgeous.min.js",
   "version": "0.0.1",
-  "homepage": "https://github.com/Foolyou/Gonzalez.JS",
+  "homepage": "https://github.com/Foolyou/gorgeous.JS",
   "authors": [
     "foolyou <foolyou.chen@outlook.com>"
   ],

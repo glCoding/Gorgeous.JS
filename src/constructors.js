@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-	var g = gonzalez;
+	var g = gorgeous;
 
 	function createCanvasContext(width, height) {
 		var canvas = document.createElement('canvas');

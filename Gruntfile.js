@@ -7,8 +7,8 @@ module.exports = function(grunt) {
         separator: ';\n',
       },
       build: {
-        src: ['src/gonzalez.js', 'src/constructors.js', 'src/tools.js'],
-        dest: 'build/gonzalez.concat.js'
+        src: ['src/gorgeous.js', 'src/constructors.js', 'src/tools.js'],
+        dest: 'build/gorgeous.concat.js'
       }
     },
     uglify: {
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'build/gonzalez.min.js': ['build/gonzalez.concat.js'],
+          'build/gorgeous.min.js': ['build/gorgeous.concat.js'],
         }
       }
     },
@@ -28,11 +28,11 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'gonzalez.min.js': 'gonzalez.min.js'
+          'gorgeous.min.js': 'gorgeous.min.js'
         }
       }
     },
-    clean: ['build/gonzalez.concat.js']
+    clean: ['build/gorgeous.concat.js']
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');

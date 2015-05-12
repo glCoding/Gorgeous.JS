@@ -1,5 +1,5 @@
 {
-  "name": "Gonzalez.JS",
+  "name": "Gorgeous.JS",
   "version": "0.0.1",
   "description": "A JavaScript Library for Digital Image Processing.",
   "main": "index.js",
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/foolyou/Gonzalez.JS"
+    "url": "https://github.com/foolyou/gorgeous.JS"
   },
   "keywords": [
     "node",
