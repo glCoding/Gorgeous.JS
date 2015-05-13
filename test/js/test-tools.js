@@ -1,5 +1,7 @@
-/*
- * 
+/**
+ * Serialize callback chain, it will call the first method and pass next
+ * one as callback to previous one.
+ * @param {Array} methods: contains callback chain as an Array. 
  */
 var waterfall = function (methods, finalHandler) {
 	var i = 0;
@@ -40,6 +42,11 @@ var Test = (function () {
 		testDiv.appendChild(t);
 
 		var tools = {};
+		
+		tools.assert = function () {
+			
+		};
+		
 		tools.log = function (description) {
 			var h = document.createElement('h3');
 			h.className = 'log';
@@ -60,6 +67,7 @@ var Test = (function () {
 			span.innerHTML = description;
 			showDiv.appendChild(description);
 		};
+		
 		testOprations(tools);
 	};
 } ());
