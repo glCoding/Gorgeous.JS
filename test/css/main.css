@@ -6,13 +6,67 @@
 	text-align: center;
 }
 
+.links {
+	text-align: center;
+	border: 1px #909090 solid;
+	max-width: 640px;
+	margin: 0 auto;
+}
+
+.links ol {
+	text-align: left;
+}
+
+div.result {
+	border: 1px silver double;
+}
+
 div.test {
 	border: 1px #0B0B0B solid;
-	margin: 4px 2px;
+	margin: 24px 2px;
 	padding: 0 4px;
 }
 
-h3.log {
+.result.passed {
+	background-color: lime;
+}
+
+.result.error {
+	background-color: crimson;
+}
+
+.test.running {
+	background-color: darkcyan;
+}
+
+.test.passed {
+	background-color: lime;
+}
+
+.test.error {
+	background-color: darkred;
+}
+
+p.log {
 	margin: 4px;
-	background-color: burlywood;
+	background-color: darkkhaki;
+}
+
+.show {
+	border: 1px black solid;
+	padding: 2px;
+	max-width: 96%;
+	text-align: center;
+	display: inline-block;
+	background-color: white;
+}
+
+.show img {
+	margin-top: 4px;
+	display: block;
+}
+
+.show span {
+	font-size: 28px;
+	background-color: #909090;
 }

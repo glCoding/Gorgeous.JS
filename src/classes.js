@@ -25,16 +25,11 @@
 	}
 
 	function initImageDataFromCanvas(imd, canvas) {
-		imd.ctx = createCanvasContext(canvas.width, canvas.height);
-		imd.ctx.putImageData(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), 0, 0);
-		imd.width = canvas.width;
-		imd.height = canvas.height;
-		imd.native = imd.ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.native.data;
+		initImageDataFromContext(imd, canvas.getContext('2d'));
 	}
 
 	function initImageDataFromContext(imd, ctx) {
-		initImageDataFromCanvas(imd, ctx.canvas);
+		initImageDataFromNativeImageData(imd, ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
 	}
 
 	function initImageDataFromString(imd, str, callback) {
@@ -109,6 +104,22 @@
 				callback(pixels[x][y], data, now);
 			}
 		}
+		pixels.every = function (test, fail) {
+			if (!(test instanceof Function)) {
+				return false;
+			}
+			for (var y = this.top; y < this.bottom; y++) {
+				for (var x = this.left; x < this.right; x++) {
+					if(!test(this[x][y], x, y)) {
+						if (fail instanceof Function) {
+							fail(this[x][y], x, y);
+						}
+						return false;
+					}
+				}
+			}
+			return this;
+		};
 		return pixels;
 	}
 
@@ -129,23 +140,21 @@
 		if (!(this instanceof g.ImageData)) {
 			return new g.ImageData(src, callback);
 		}
-		if (src instanceof HTMLCanvasElement) {
+		makeBlankImageData(this);
+		if (src instanceof Image) {
+			initImageDataFromImage(this, src);
+		} else if (typeof src === 'string') {
+			initImageDataFromString(this, src, callback);
+		} else if (src instanceof HTMLCanvasElement) {
 			initImageDataFromCanvas(this, src);
 		} else if (src instanceof CanvasRenderingContext2D) {
 			initImageDataFromContext(this, src);
+		} else if (src instanceof g.ImageData) {
+			initImageDataFromAnotherImageData(this, src);
+		} else if (src instanceof ImageData) {
+			initImageDataFromNativeImageData(this, src);
 		} else {
-			makeBlankImageData(this);
-			if (typeof src === 'string') {
-				initImageDataFromString(this, src, callback);
-			} else if (src instanceof Image) {
-				initImageDataFromImage(this, src);
-			} else if (src instanceof g.ImageData) {
-				initImageDataFromAnotherImageData(this, src);
-			} else if (src instanceof ImageData) {
-				initImageDataFromNativeImageData(this, src);
-			} else {
-				throw new Error('Need a source to create g.ImageData.');
-			}
+			throw new Error('Need a source to create g.ImageData.');
 		}
 	};
 
@@ -165,7 +174,7 @@
 	};
 
 	g.ImageData.prototype.getSize = function () {
-		return { w: this.width, h: this.height };
+		return { width: this.width, height: this.height };
 	};
 
 	g.ImageData.prototype.getPixels = function (l, t, w, h) {

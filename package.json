@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "npm install --save-dev && grunt build",
-    "test": "npm install --save-dev && grunt build && node index.js"
+    "test": "npm install --save-dev && grunt test && node index.js"
   },
   "dependencies": {
     "express": "4.12.3",

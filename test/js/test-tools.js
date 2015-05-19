@@ -1,7 +1,10 @@
 /**
- * Serialize callback chain, it will call the first method and pass next
- * one as callback to previous one.
- * @param {Array} methods: contains callback chain as an Array. 
+ * Serialize callback chain. It will wrap next method as a callback to previous one.
+ * Every method should call its callback to continue the chain.
+ * 
+ * @param {Array.<function (..., callback)>} methods: contains callback chain as an Array.
+ * 	|--@arg {function (err, ...)} callback
+ * @param {function} finalHandler: handle errors and as the final callback.
  */
 var waterfall = function (methods, finalHandler) {
 	var i = 0;
@@ -23,51 +26,118 @@ var waterfall = function (methods, finalHandler) {
 	methods[0](next);
 };
 
-var Test = (function () {
-	var count = (function () {
-		var counter = 0;
-		return function () {
-			return ++counter;
-		};
-	} ());
+/**
+ * Create a test frame for a test task and execute the tests.
+ * 
+ * @param {Array.<string, function>} arg: Array for [{string}description, {function (tools)}test] pairs.
+ * @param {string} arg[0]: description for corresponding test.
+ * @param {function (tools)} arg[1]: function contains the test operations.
+ * 	|---@arg {Object} tools: contains tools for test.
+ */
+var Test = function () {
+	var total = arguments.length,
+		running = arguments.length,
+		passed = 0,
+		error = 0;
 
-	return function (title, testOprations) {
+	var resultDiv = document.createElement('div');
+	resultDiv.className = 'result';
+	document.body.appendChild(resultDiv);
 
-		var testDiv = document.createElement('div');
-		testDiv.className = 'test';
-		document.body.appendChild(testDiv);
+	var progressSpan = document.createElement('span');
+	progressSpan.className = 'progress';
+	resultDiv.appendChild(progressSpan);
+	progressChange();
 
-		var t = document.createElement('h2');
-		t.innerHTML = count() + '. ' + title;
-		testDiv.appendChild(t);
+	for (var i = 0; i < arguments.length; i++) {
+		if (arguments[i][1] && arguments[i][1] instanceof Function) {
+			//Top test Div
+			var testDiv = document.createElement('div');
+			testDiv.className = 'test running';
+			document.body.appendChild(testDiv);
+
+			//test description
+			var t = document.createElement('h2');
+			t.innerHTML = (i + 1) + '. ' + arguments[i][0];
+			testDiv.appendChild(t);
+				
+			//execute test operations
+			arguments[i][1](toolsGenerator(testDiv));
+		} else {
+			throw new Error('arguments[' + i + '][1] should be a function.');
+		}
+	}
+
+	function progressChange() {
+		progressSpan.innerHTML = 'total: ' + total + '; running: '
+		+ running + '; passed: ' + passed + '; error: '
+		+ error + '.';
+		if (passed === total) {
+			resultDiv.className = 'result passed';
+		} else if (error !== 0) {
+			resultDiv.className = 'result error';
+		}
+	}
+
+	function toolsGenerator(testDiv) {
+		var passCalled = false;
 
 		var tools = {};
 		
-		tools.assert = function () {
-			
-		};
-		
+		/**
+		 * log description to test frame and other parameters will
+		 * be logged to console.
+		 * 
+		 * @param {string} description
+		 */
 		tools.log = function (description) {
-			var h = document.createElement('h3');
-			h.className = 'log';
-			h.innerHTML = 'LOG: ' + description;
-			testDiv.appendChild(h);
+			var p = document.createElement('p');
+			p.className = 'log';
+			p.innerHTML = 'LOG: ' + description;
+			testDiv.appendChild(p);
 			console.log(description);
 			for (var i = 1; i < arguments.length; i++) {
 				console.log(arguments[i]);
 			}
 		};
 
+		/**
+		 * show a figure with its description.
+		 * 
+		 * @param {string} description
+		 * @param {Image} figure
+		 */
 		tools.show = function (description, figure) {
 			var showDiv = document.createElement('div');
 			showDiv.className = 'show';
 			testDiv.appendChild(showDiv);
-			showDiv.appendChild(figure);
 			var span = document.createElement('span');
 			span.innerHTML = description;
-			showDiv.appendChild(description);
+			showDiv.appendChild(span);
+			showDiv.appendChild(figure);
 		};
-		
-		testOprations(tools);
-	};
-} ());
+	
+		/**
+		 * make sure if a test passed.
+		 * 
+		 * @param {boolean} condition
+ 		 */
+		tools.pass = function (condition) {
+			if (!passCalled) {
+				if (condition) {
+					testDiv.className = 'test passed';
+					passed += 1;
+				} else {
+					testDiv.className = 'test error';
+					error += 1;
+				}
+				running -= 1;
+				progressChange();
+			} else {
+				throw new Error('pass() can only called once in a test.');
+			}
+		};
+
+		return tools;
+	}
+};

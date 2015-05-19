@@ -4,7 +4,9 @@
 
 	g.loadImage = function (src, callback) {
 		var img = new Image();
-		img.onload = callback;
+		img.onload = function (e) {
+			callback(img, e);
+		};
 		img.src = src;
 		return img;
 	};

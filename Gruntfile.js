@@ -7,8 +7,12 @@ module.exports = function(grunt) {
         separator: ';\n',
       },
       build: {
-        src: ['src/gorgeous.js', 'src/constructors.js', 'src/tools.js'],
+        src: ['src/gorgeous.js', 'src/classes.js', 'src/tools.js'],
         dest: 'build/gorgeous.concat.js'
+      },
+      test: {
+        src: ['src/gorgeous.js', 'src/classes.js', 'src/tools.js'],
+        dest: 'build/gorgeous.js'
       }
     },
     uglify: {
@@ -26,9 +30,9 @@ module.exports = function(grunt) {
         srcPrefix: 'build',
         destPrefix: 'test/js'
       },
-      build: {
+      test: {
         files: {
-          'gorgeous.min.js': 'gorgeous.min.js'
+          'gorgeous.js': 'gorgeous.js'
         }
       }
     },
@@ -40,7 +44,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-npmcopy');
 
-  grunt.registerTask('build', ['concat', 'uglify', 'clean', 'npmcopy']);
+  grunt.registerTask('build', ['concat', 'uglify', 'clean']);
+  grunt.registerTask('test', ['concat', 'npmcopy']);
   grunt.registerTask('default', 'build');
 
 };
