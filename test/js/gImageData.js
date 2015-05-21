@@ -1,3 +1,4 @@
+//Test:gorgeous g.ImageData test
 (function () {
 
 	var g = gorgeous;

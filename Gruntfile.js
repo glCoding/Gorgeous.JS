@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     npmcopy: {
       options: {
         srcPrefix: 'build',
-        destPrefix: 'test/js'
+        destPrefix: 'test/js/lib'
       },
       test: {
         files: {
