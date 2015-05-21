@@ -17,7 +17,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 		gimd.getImage(function (image) {
 			test.show('BinaryImageData from string source', image);
 			test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-				&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+				&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 				&& image instanceof Image);
 		});
 	});
@@ -29,7 +29,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from Image', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -40,7 +40,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from ImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -51,7 +51,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from g.ImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -62,7 +62,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from g.GrayImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -73,7 +73,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from g.BinaryImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -84,7 +84,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from Context2D', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -95,7 +95,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData from Canvas', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -111,7 +111,7 @@ Test(['g.BinaryImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('BinaryImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]

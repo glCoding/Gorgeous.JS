@@ -2,6 +2,19 @@ var gorgeous = {};;
 (function () {
 	'use strict';
 	var g = gorgeous;
+	
+	function rangeTest(l, t, w, h, width, height) {
+		l = l || 0;
+		t = t || 0;
+		w = w || (width - l);
+		h = h || (height - t);
+		if (l < 0 || l > width || t < 0 || t > height
+		|| w + l > width || w < 0 || h + t > height || h < 0) {
+			return false;
+		} else {
+			return [l, t, l + w, t + h];
+		}
+	}
 
 	function createCanvasContext(width, height) {
 		var canvas = document.createElement('canvas');
@@ -14,7 +27,7 @@ var gorgeous = {};;
 		imd.ctx = createCanvasContext(0, 0);
 		imd.width = 0;
 		imd.height = 0;
-		imd.native = null;
+		imd.nativeImageData = null;
 		imd.data = null;
 	}
 
@@ -48,38 +61,36 @@ var gorgeous = {};;
 		var ctx = imd.ctx;
 		setImageDataSize(imd, img.width, img.height);
 		ctx.drawImage(img, 0, 0, img.width, img.height);
-		imd.native = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.native.data;
+		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
+		imd.data = imd.nativeImageData.data;
 	}
 
 	function initImageDataFromAnotherImageData(imd, aimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, aimd.width, aimd.height);
-		ctx.putImageData(aimd.native, 0, 0);
-		imd.native = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.native.data;
+		ctx.putImageData(aimd.nativeImageData, 0, 0);
+		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
+		imd.data = imd.nativeImageData.data;
 	}
 
 	function initImageDataFromNativeImageData(imd, nimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, nimd.width, nimd.height);
 		ctx.putImageData(nimd, 0, 0);
-		imd.native = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.native.data;
+		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
+		imd.data = imd.nativeImageData.data;
 	}
 
 	function getPixels(imd, l, t, w, h, callback) {
-		l = l || 0;
-		t = t || 0;
-		w = w || (imd.width - l);
-		h = h || (imd.height - t);
-		if (l < 0 || t < 0 || l > imd.width || t > imd.height
-			|| w < 0 || h < 0 || l + w > imd.width || t + h > imd.height) {
+		var range = rangeTest(l, t, w, h, imd.width, imd.height);
+		if(!range) {
 			throw new Error('range error');
 		}
+		l = range[0];
+		t = range[1];
+		var r = range[2],
+			b = range[3];
 		var pixels = [];
-		var r = w + l,
-			b = h + t;
 		for (var i = l; i < r; i++) {
 			pixels[i] = [];
 		}
@@ -88,8 +99,8 @@ var gorgeous = {};;
 		pixels.top = t;
 		pixels.width = w;
 		pixels.height = h;
-		pixels.right = l + w;
-		pixels.bottom = t + h;
+		pixels.right = r;
+		pixels.bottom = b;
 		pixels.each = function (opr) {
 			for (var y = this.top; y < this.bottom; y++) {
 				for (var x = this.left; x < this.right; x++) {
@@ -132,9 +143,9 @@ var gorgeous = {};;
 				callback(pixels[x][y], data, now);
 			}
 		}
-		imd.ctx.putImageData(imd.native, 0, 0);
-		imd.native = imd.ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.native.data;
+		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
+		imd.nativeImageData = imd.ctx.getImageData(0, 0, imd.width, imd.height);
+		imd.data = imd.nativeImageData.data;
 	}
 
 	g.ImageData = function (src, callback) {
@@ -202,7 +213,7 @@ var gorgeous = {};;
 		for (var i = 0; i < data.length; i += 4) {
 			data[i + 1] = data[i + 2] = 0;
 		}
-		imd.ctx.putImageData(imd.native, 0, 0);
+		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
 		return imd;
 	};
 
@@ -212,7 +223,7 @@ var gorgeous = {};;
 		for (var i = 0; i < data.length; i += 4) {
 			data[i] = data[i + 2] = 0;
 		}
-		imd.ctx.putImageData(imd.native, 0, 0);
+		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
 		return imd;
 	};
 
@@ -222,8 +233,26 @@ var gorgeous = {};;
 		for (var i = 0; i < data.length; i += 4) {
 			data[i] = data[i + 1] = 0;
 		}
-		imd.ctx.putImageData(imd.native, 0, 0);
+		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
 		return imd;
+	};
+
+	g.ImageData.prototype.copy = function (l, t, w, h) {
+		var range = rangeTest(l, t, w, h, this.width, this.height);
+		if(!range) {
+			throw new Error('range error');
+		}
+		l = range[0];
+		t = range[1];
+		var r = range[2],
+			b = range[3];
+		return this.ctx.getImageData(l, t, r-l, b-h);
+	};
+
+	g.ImageData.prototype.paste = function (nimd, l, t, w, h) {
+		w = (w) ? ((w < nimd.width) ? w : nimd.width) : nimd.width;
+		h = (h) ? ((h < nimd.height) ? h : nimd.height) : nimd.height;
+		this.ctx.putImageData(nimd, l, t, 0, 0, w, h);
 	};
 
 	g.GrayImageData = function (src, intensity, callback) {
@@ -245,8 +274,8 @@ var gorgeous = {};;
 				intensity(ps);
 				self.setPixels(ps);
 			} else {
-				defaultIntensity(self.native);
-				self.ctx.putImageData(self.native, 0, 0);
+				defaultIntensity(self.nativeImageData);
+				self.ctx.putImageData(self.nativeImageData, 0, 0);
 			}
 		}
 		if (src instanceof g.GrayImageData) {
@@ -313,8 +342,8 @@ var gorgeous = {};;
 				threshold(ps);
 				self.setPixels(ps);
 			} else {
-				defaultThreshold(self.native);
-				self.ctx.putImageData(self.native, 0, 0);
+				defaultThreshold(self.nativeImageData);
+				self.ctx.putImageData(self.nativeImageData, 0, 0);
 			}
 		}
 		if (src instanceof g.BinaryImageData) {

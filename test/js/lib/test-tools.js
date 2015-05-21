@@ -111,6 +111,10 @@ var Test = function () {
 			var showDiv = document.createElement('div');
 			showDiv.className = 'show';
 			testDiv.appendChild(showDiv);
+			if (description instanceof Image) {
+				showDiv.appendChild(description);
+				return;
+			}
 			var span = document.createElement('span');
 			span.innerHTML = description;
 			showDiv.appendChild(span);

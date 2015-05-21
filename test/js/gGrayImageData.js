@@ -17,7 +17,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 		gimd.getImage(function (image) {
 			test.show('GrayImageData from string source', image);
 			test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-				&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+				&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 				&& image instanceof Image);
 		});
 	});
@@ -29,7 +29,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from Image', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -40,7 +40,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from ImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -51,7 +51,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from g.ImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -62,7 +62,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from g.GrayImageData', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -73,7 +73,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from Context2D', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -84,7 +84,7 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 	gimd.getImage(function (image) {
 		test.show('GrayImageData from Canvas', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]
@@ -95,12 +95,13 @@ Test(['g.GrayImageData({string}, null, {function})', function (test) {
 		ps.each(function (p) {
 			p.l = Math.min(p.r, p.g, p.b);
 		});
+		console.log(ps);
 	});
 	test.log('width: ' + gimd.width + '; height:' + gimd.height);
 	gimd.getImage(function (image) {
 		test.show('GrayImageData Min value of RGBs', image);
 		test.pass(gimd.width === 512 && gimd.width === 512 && gimd.ctx
-			&& gimd.data instanceof Uint8ClampedArray && gimd.native instanceof ImageData
+			&& gimd.data instanceof Uint8ClampedArray && gimd.nativeImageData instanceof ImageData
 			&& image instanceof Image);
 	});
 }]

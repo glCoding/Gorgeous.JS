@@ -18,7 +18,7 @@ function tests() {
 			g.ImageData(src, function (imd) {
 				test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 				test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-					&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+					&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 			});
 		}]
 		,
@@ -26,35 +26,35 @@ function tests() {
 			var imd = g.ImageData(img);
 			test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 			test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-				&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
 		['g.ImageData({native ImageData})', function (test) {
 			var imd = g.ImageData(ctx.getImageData(0, 0, canvas.width, canvas.height));
 			test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 			test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-				&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
 		['g.ImageData({g.ImageData}) (Actually a copy method)', function (test) {
 			var imd = g.ImageData(g.ImageData(img));
 			test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 			test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-				&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
 		['g.ImageData({CanvasRenderingContext2D})', function (test) {
 			var imd = g.ImageData(ctx);
 			test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 			test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-				&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
 		['g.ImageData({HTMLCanvasElement})', function (test) {
 			var imd = g.ImageData(canvas);
 			test.log('g.ImageData constructed! width:' + imd.width + ' height:' + imd.height);
 			test.pass(imd.width === 512 && imd.width === 512 && imd.ctx
-				&& imd.data instanceof Uint8ClampedArray && imd.native instanceof ImageData);
+				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
 		['g.ImageData.prototype.toDataURL()', function (test) {
@@ -175,6 +175,25 @@ function tests() {
 					})) && (bc.getPixels().every(function (p) {
 						return (p.r === 0x00 && p.g === 0x00 && p.b === 0xc0);
 					})));
+			});
+		}]
+		,
+		['g.ImageData.prototype.copy & paste', function (test) {
+			var imd1 = g.ImageData(ctx);
+			var canvas = document.createElement('canvas');
+			canvas.width = 300;
+			canvas.height = 300;
+			var ctx2 = canvas.getContext('2d');
+			ctx2.fillStyle = '#F0B0C0';
+			ctx2.fillRect(0, 0, 300, 300);
+			var imd2 = g.ImageData(ctx2);
+			var clip = imd1.copy(35, 71, 100, 200);
+			imd2.paste(clip, 19, 36, 21, 31);
+			imd2.getImage(function (img) {
+				test.show('Copy & Paste', img);
+				test.pass(function () {
+					return (img instanceof Image);
+				});
 			});
 		}]
 		);
