@@ -230,18 +230,11 @@
 			return new g.GrayImageData(src, intensity, callback);
 		}
 		function defaultIntensity(n) {
-			function mm(arr3) {
-				var result = { max: arr3[0], min: arr3[0] };
-				for (var i = 1; i < 3; i++) {
-					if (arr3[i] < result.min) { result.min = arr3[i]; }
-					if (arr3[i] > result.max) { result.max = arr3[i]; }
-				}
-				return result;
-			}
 			var data = n.data;
 			for (var i = 0; i < data.length; i += 4) {
-				var mmr = mm([data[i], data[i + 1], data[i + 2]]);
-				var lightness = (mmr.max + mmr.min) * 0.5;
+				var max = Math.max(data[i], data[i + 1], data[i + 2]);
+				var min = Math.min(data[i], data[i + 1], data[i + 2]);
+				var lightness = (max + min) * 0.5;
 				data[i] = data[i + 1] = data[i + 2] = lightness;
 			}
 		}
