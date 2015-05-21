@@ -29,7 +29,7 @@ for (var i in tests) {
 	if(fs.existsSync(js)) {
 		console.log((js + ' already exists.').yellow);
 	} else {
-		var jshead = '//Test:' + tests[i][1] + '\n';
+		var jshead = '//Test:' + tests[i][1] + '\nvar g = gorgeous;\n';
 		fs.writeFileSync(js, jshead, {encoding: 'utf8', flag: 'w'});
 		console.log((js + ' created.').blue);
 	}
