@@ -59,7 +59,7 @@ var Test = function () {
 				return;
 			}
 			process();
-			setTimeout(chunk, 30);
+			setTimeout(chunk, 100);
 			i++;
 		}
 
