@@ -35,6 +35,7 @@ var waterfall = function (methods, finalHandler) {
  * 	|---@arg {Object} tools: contains tools for test.
  */
 var Test = function () {
+	var args = arguments;
 	var total = arguments.length,
 		running = arguments.length,
 		passed = 0,
@@ -48,25 +49,39 @@ var Test = function () {
 	progressSpan.className = 'progress';
 	resultDiv.appendChild(progressSpan);
 	progressChange();
+	
+	(function () {
+		var i = 0;
+		chunk();
 
-	for (var i = 0; i < arguments.length; i++) {
-		if (arguments[i][1] && arguments[i][1] instanceof Function) {
-			//Top test Div
-			var testDiv = document.createElement('div');
-			testDiv.className = 'test running';
-			document.body.appendChild(testDiv);
-
-			//test description
-			var t = document.createElement('h2');
-			t.innerHTML = (i + 1) + '. ' + arguments[i][0];
-			testDiv.appendChild(t);
-				
-			//execute test operations
-			arguments[i][1](toolsGenerator(testDiv));
-		} else {
-			throw new Error('arguments[' + i + '][1] should be a function.');
+		function chunk() {
+			if (i >= args.length) {
+				return;
+			}
+			process();
+			setTimeout(chunk, 30);
+			i++;
 		}
-	}
+
+		function process() {
+			if (args[i][1] && args[i][1] instanceof Function) {
+				//Top test Div
+				var testDiv = document.createElement('div');
+				testDiv.className = 'test running';
+				document.body.appendChild(testDiv);
+
+				//test description
+				var t = document.createElement('h2');
+				t.innerHTML = (i + 1) + '. ' + args[i][0];
+				testDiv.appendChild(t);
+				
+				//execute test operations
+				args[i][1](toolsGenerator(testDiv));
+			} else {
+				throw new Error('arguments[' + i + '][1] should be a function.');
+			}
+		}
+	} ());
 
 	function progressChange() {
 		progressSpan.innerHTML = 'total: ' + total + '; running: '
