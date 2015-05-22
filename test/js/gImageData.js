@@ -99,24 +99,24 @@ function tests() {
 					if (x < 50) {
 						if (y < 50) {
 							if (p.r !== 0xff || p.g !== 0x00 || p.b !== 0x00 || p.a !== 255) {
-								test.log([x, y].join(', '));
+								test.log(x + ' ' + y + ' ' + p.r + ' ' + p.g + ' ' + p.b + ' ' + p.a);
 								pf = false;
 							}
 						} else {
-							if (p.r !== 0x00 || p.g !== 0xff || p.b !== 0x00 || p.a !== 255) {
-								test.log([x, y].join(', '));
+							if (p.r !== 0x00 || p.g !== 0x00 || p.b !== 0xff || p.a !== 255) {
+								test.log(x + ' ' + y + ' ' + p.r + ' ' + p.g + ' ' + p.b + ' ' + p.a);
 								pf = false;
 							}
 						}
 					} else {
 						if (y < 50) {
-							if (p.r !== 0x00 || p.g !== 0x00 || p.b !== 0xff || p.a !== 255) {
-								test.log([x, y].join(', '));
+							if (p.r !== 0x00 || p.g !== 0xff || p.b !== 0x00 || p.a !== 255) {
+								test.log(x + ' ' + y + ' ' + p.r + ' ' + p.g + ' ' + p.b + ' ' + p.a);
 								pf = false;
 							}
 						} else {
 							if (p.r !== 0xff || p.g !== 0xff || p.b !== 0xff || p.a !== 255) {
-								test.log([x, y].join(', '));
+								test.log(x + ' ' + y + ' ' + p.r + ' ' + p.g + ' ' + p.b + ' ' + p.a);
 								pf = false;
 							}
 						}

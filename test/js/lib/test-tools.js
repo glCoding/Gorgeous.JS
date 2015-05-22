@@ -128,6 +128,9 @@ var Test = function () {
  		 */
 		tools.pass = function (condition) {
 			if (!passCalled) {
+				if (condition instanceof Function) {
+					condition = condition();
+				}
 				if (condition) {
 					testDiv.className = 'test passed';
 					passed += 1;
