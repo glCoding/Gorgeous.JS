@@ -15,15 +15,8 @@
 		}
 	}
 
-	function createCanvasContext(width, height) {
-		var canvas = document.createElement('canvas');
-		canvas.width = width || 0;
-		canvas.height = height || 0;
-		return canvas.getContext('2d');
-	}
-
 	function makeBlankImageData(imd) {
-		imd.ctx = createCanvasContext(0, 0);
+		imd.ctx = g.createCanvasContext(0, 0);
 		imd.width = 0;
 		imd.height = 0;
 		imd.nativeImageData = null;
@@ -129,7 +122,7 @@
 					}
 				}
 			}
-			return this;
+			return true;
 		};
 		return pixels;
 	}
@@ -195,7 +188,7 @@
 			p.b = data[now + 2];
 			p.a = data[now + 3];
 		});
-	}
+	};
 
 	g.ImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
@@ -204,7 +197,7 @@
 			data[now + 2] = p.b;
 			data[now + 3] = p.a;
 		});
-	}
+	};
 
 	g.ImageData.prototype.getR = function () {
 		var imd = new g.ImageData(this);
@@ -297,7 +290,7 @@
 			}
 			transform(this);
 		}
-	}
+	};
 	g.GrayImageData.prototype = Object.create(g.ImageData.prototype);
 	g.GrayImageData.prototype.constructor = g.GrayImageData;
 
@@ -306,7 +299,7 @@
 			p.l = data[now];
 			p.a = data[now + 3];
 		});
-	}
+	};
 
 	g.GrayImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
@@ -365,7 +358,7 @@
 			}
 			transform(this);
 		}
-	}
+	};
 	g.BinaryImageData.prototype = Object.create(g.GrayImageData.prototype);
 	g.BinaryImageData.prototype.constructor = g.BinaryImageData;
 
@@ -378,6 +371,6 @@
 				throw new Error('binary image only accepts 0 or 255 as lightness.');
 			}
 		});
-	}
+	};
 
 } ());

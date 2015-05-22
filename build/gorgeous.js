@@ -16,15 +16,8 @@ var gorgeous = {};;
 		}
 	}
 
-	function createCanvasContext(width, height) {
-		var canvas = document.createElement('canvas');
-		canvas.width = width || 0;
-		canvas.height = height || 0;
-		return canvas.getContext('2d');
-	}
-
 	function makeBlankImageData(imd) {
-		imd.ctx = createCanvasContext(0, 0);
+		imd.ctx = g.createCanvasContext(0, 0);
 		imd.width = 0;
 		imd.height = 0;
 		imd.nativeImageData = null;
@@ -130,7 +123,7 @@ var gorgeous = {};;
 					}
 				}
 			}
-			return this;
+			return true;
 		};
 		return pixels;
 	}
@@ -196,7 +189,7 @@ var gorgeous = {};;
 			p.b = data[now + 2];
 			p.a = data[now + 3];
 		});
-	}
+	};
 
 	g.ImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
@@ -205,7 +198,7 @@ var gorgeous = {};;
 			data[now + 2] = p.b;
 			data[now + 3] = p.a;
 		});
-	}
+	};
 
 	g.ImageData.prototype.getR = function () {
 		var imd = new g.ImageData(this);
@@ -298,7 +291,7 @@ var gorgeous = {};;
 			}
 			transform(this);
 		}
-	}
+	};
 	g.GrayImageData.prototype = Object.create(g.ImageData.prototype);
 	g.GrayImageData.prototype.constructor = g.GrayImageData;
 
@@ -307,7 +300,7 @@ var gorgeous = {};;
 			p.l = data[now];
 			p.a = data[now + 3];
 		});
-	}
+	};
 
 	g.GrayImageData.prototype.setPixels = function (pixels) {
 		setPixels(this, pixels, function (p, data, now) {
@@ -366,7 +359,7 @@ var gorgeous = {};;
 			}
 			transform(this);
 		}
-	}
+	};
 	g.BinaryImageData.prototype = Object.create(g.GrayImageData.prototype);
 	g.BinaryImageData.prototype.constructor = g.BinaryImageData;
 
@@ -379,7 +372,7 @@ var gorgeous = {};;
 				throw new Error('binary image only accepts 0 or 255 as lightness.');
 			}
 		});
-	}
+	};
 
 } ());;
 (function () {
@@ -393,5 +386,146 @@ var gorgeous = {};;
 		};
 		img.src = src;
 		return img;
+	};
+	
+	g.createCanvasContext = function (width, height) {
+		var canvas = document.createElement('canvas');
+		canvas.width = width || 0;
+		canvas.height = height || 0;
+		return canvas.getContext('2d');
+	};
+	
+	g.getLevel = function (imd) {
+		if(imd instanceof g.BinaryImageData) {
+			return 3;
+		} else if (imd instanceof g.GrayImageData) {
+			return 2;
+		} else if (imd instanceof g.ImageData) {
+			return 1;
+		}
+	}
+
+} ());
+;
+(function () {
+	'use strict';
+	var g = gorgeous;
+	var arithmeticError = new Error('Arithmetic Operations can only be performed on two ImageData in the same size.');
+
+	function arithmeticOperationRangeTest(imd1, imd2) {
+		return (imd1.width === imd2.width && imd1.height === imd2.height);
+	}
+
+	function testAndDo(imda, imdb, process) {
+		if (arithmeticOperationRangeTest(imda, imdb)) {
+			var rimd;
+			var rl, imd1, imd2;
+			var il = g.getLevel(imdb);
+			var tl = g.getLevel(imda);
+			if (il < tl) {
+				rl = il;
+				imd1 = imdb;
+				imd2 = imda;
+			} else {
+				rl = tl;
+				imd1 = imda;
+				imd2 = imdb;
+			}
+			switch (rl) {
+				case 1:
+					rimd = new g.ImageData(imd1);
+					break;
+				case 2:
+					rimd = new g.GrayImageData(imd1);
+					break;
+				case 3:
+					rimd = new g.BinaryImageData(imd1);
+					break;
+				default:
+					rimd = new g.ImageData(imd1);
+			}
+			process(imd1, imd2, rimd);
+			return rimd;
+		} else {
+			throw arithmeticError;
+		}
+	}
+
+	g.ImageData.prototype.add = function (imd) {
+		function process(imd1, imd2, rimd) {
+			var data = rimd.data;
+			for (var i = 0; i < data.length; i += 4) {
+				data[i] += imd2.data[i];
+				data[i+1] += imd2.data[i+1];
+				data[i+2] += imd2.data[i+2];
+				data[i+3] = 255;
+			}
+			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
+			return rimd;
+		}
+		return testAndDo(this, imd, process);
+	};
+	
+	g.ImageData.prototype.add = function (imd) {
+		function process(imd1, imd2, rimd) {
+			var data = rimd.data;
+			for (var i = 0; i < data.length; i += 4) {
+				data[i] += imd2.data[i];
+				data[i+1] += imd2.data[i+1];
+				data[i+2] += imd2.data[i+2];
+				data[i+3] = 255;
+			}
+			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
+			return rimd;
+		}
+		return testAndDo(this, imd, process);
+	};
+
+	g.ImageData.prototype.sub = function (imd) {
+		function process(imd1, imd2, rimd) {
+			var data = rimd.data;
+			for (var i = 0; i < data.length; i += 4) {
+				var diff = imd1.data[i] - imd2.data[i];
+				data[i] = (diff > 0) ? diff : 0;
+				diff = imd1.data[i+1] - imd2.data[i+1];
+				data[i+1] = (diff > 0) ? diff : 0;
+				diff = imd1.data[i+2] - imd2.data[i+2];
+				data[i+2] = (diff > 0) ? diff : 0;
+				data[i+3] = 255;
+			}
+			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
+			return rimd;
+		}
+		return testAndDo(this, imd, process);
+	};
+	
+	g.ImageData.prototype.mul = function (imd) {
+		function process(imd1, imd2, rimd) {
+			var data = rimd.data;
+			for (var i = 0; i < data.length; i += 4) {
+				data[i] *= imd2.data[i];
+				data[i+1] *= imd2.data[i+1];
+				data[i+2] *= imd2.data[i+2];
+				data[i+3] = 255;
+			}
+			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
+			return rimd;
+		}
+		return testAndDo(this, imd, process);
+	};
+
+	g.ImageData.prototype.div = function (imd) {
+		function process(imd1, imd2, rimd) {
+			var data = rimd.data;
+			for (var i = 0; i < data.length; i += 4) {
+				data[i] /= imd2.data[i] + 0.00001;
+				data[i+1] /= imd2.data[i+1] + 0.00001;
+				data[i+2] /= imd2.data[i+2] + 0.00001;
+				data[i+3] = 255;
+			}
+			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
+			return rimd;
+		}
+		return testAndDo(this, imd, process);
 	};
 } ());

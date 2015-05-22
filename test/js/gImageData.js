@@ -9,7 +9,6 @@ var img = g.loadImage(src, function (img) {
 	canvas.height = img.height;
 	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 	url = canvas.toDataURL();
-	alert('load done');
 	tests();
 });
 

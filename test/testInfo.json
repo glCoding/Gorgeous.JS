@@ -1,8 +1,9 @@
 {
 	"tests": [
-		["gtools", "gorgeous tools test"],
-		["gImageData", "gorgeous g.ImageData test"],
-		["gGrayImageData", "gorgeous g.GrayImageData test"],
-		["gBinaryImageData", "gorgeous g.BinaryImageData test"]
+		["gtools", "Gorgeous Tools Test"],
+		["gImageData", "Gorgeous g.ImageData Test"],
+		["gGrayImageData", "Gorgeous g.GrayImageData Test"],
+		["gBinaryImageData", "Gorgeous g.BinaryImageData Test"],
+		["Arithmetic Operations", "Arithmetic Operations Test"]
 	]
 }
