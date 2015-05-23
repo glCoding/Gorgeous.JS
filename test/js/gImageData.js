@@ -196,5 +196,61 @@ function tests() {
 				});
 			});
 		}]
+		,
+		['g.ImageData.prototype.getH\\S\\I', function (test) {
+			var imd = g.ImageData(img);
+			imd.getImage(function (img) {
+				test.show('Origin', img)
+			});
+			var himd = imd.getH();
+			himd.getImage(function (img) {
+				test.show('Hue', img);
+			});
+			var simd = imd.getS();
+			simd.getImage(function (img) {
+				test.show('Saturation', img);
+			});
+			var iimd = imd.getI();
+			iimd.getImage(function (img) {
+				test.show('Intensity', img);
+			});
+			var hsiimd = imd.getHSI();
+			hsiimd.getImage(function (img) {
+				test.show('HSI', img);
+			});
+			var rgbimd = hsiimd.getRGB();
+			rgbimd.getImage(function (img) {
+				test.show('RGB', img);
+			});
+			var rgbs = [[0, 72, 137],
+						[72, 0, 137],
+						[57, 31, 199],
+						[100, 200, 255],
+						[255, 255, 255],
+						[0, 0, 0],
+						[30, 30, 30],
+						[123, 71, 36],
+						[159, 155, 224]];
+			test.pass(function () {
+				function equal(a, b) {
+					for (var i in a) {
+						if (Math.abs(a[i] - b[i]) > 1) {
+							return false;
+						}
+					}
+					return true;
+				}
+				function parse(v) {
+					return parseInt(v);
+				}
+				for (var i in rgbs) {
+					console.log(rgbs[i], g.rgb2hsi(rgbs[i]).map(parse), g.hsi2rgb(g.rgb2hsi(rgbs[i])).map(parse));
+					if(!equal(rgbs[i], g.hsi2rgb(g.rgb2hsi(rgbs[i])).map(parse))) {
+						return false;
+					}
+				}
+				return true;
+			});
+		}]
 		);
 }

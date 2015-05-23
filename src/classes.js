@@ -15,14 +15,6 @@
 		}
 	}
 
-	function makeBlankImageData(imd) {
-		imd.ctx = g.createCanvasContext(0, 0);
-		imd.width = 0;
-		imd.height = 0;
-		imd.nativeImageData = null;
-		imd.data = null;
-	}
-
 	function setImageDataSize(imd, width, height) {
 		imd.width = width;
 		imd.height = height;
@@ -144,7 +136,7 @@
 		if (!(this instanceof g.ImageData)) {
 			return new g.ImageData(src, callback);
 		}
-		makeBlankImageData(this);
+		g.makeBlank(this, 1, 1);
 		if (src instanceof Image) {
 			initImageDataFromImage(this, src);
 		} else if (typeof src === 'string') {
@@ -254,9 +246,7 @@
 		function defaultIntensity(n) {
 			var data = n.data;
 			for (var i = 0; i < data.length; i += 4) {
-				var max = Math.max(data[i], data[i + 1], data[i + 2]);
-				var min = Math.min(data[i], data[i + 1], data[i + 2]);
-				var lightness = (max + min) * 0.5;
+				var lightness = (data[i] + data[i+1] + data[i+2]) / 3;
 				data[i] = data[i + 1] = data[i + 2] = lightness;
 			}
 		}

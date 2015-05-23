@@ -18,6 +18,14 @@
 		return canvas.getContext('2d');
 	};
 	
+	g.makeBlank = function (imd, width, height) {
+		imd.ctx = g.createCanvasContext(width || 1, height || 1);
+		imd.width = width || 1;
+		imd.height = height || 1;
+		imd.nativeImageData = imd.ctx.getImageData(0, 0, width || 1, height || 1);
+		imd.data = imd.nativeImageData.data;
+	};
+	
 	g.getLevel = function (imd) {
 		if(imd instanceof g.BinaryImageData) {
 			return 3;
@@ -26,6 +34,14 @@
 		} else if (imd instanceof g.ImageData) {
 			return 1;
 		}
-	}
+	};
+	
+	g.createBlankImageData = function (which, width, height) {
+		function Helper() {};
+		Helper.prototype = which.prototype;
+		var r = new Helper();
+		g.makeBlank(r, width, height);
+		return r;
+	};
 
 } ());
