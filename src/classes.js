@@ -45,21 +45,21 @@
 		var ctx = imd.ctx;
 		setImageDataSize(imd, img.width, img.height);
 		ctx.drawImage(img, 0, 0, img.width, img.height);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function initImageDataFromAnotherImageData(imd, aimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, aimd.width, aimd.height);
 		ctx.putImageData(aimd.nativeImageData, 0, 0);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function initImageDataFromNativeImageData(imd, nimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, nimd.width, nimd.height);
 		ctx.putImageData(nimd, 0, 0);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function getPixels(imd, l, t, w, h, callback) {
@@ -156,7 +156,7 @@
 	g.ImageData.prototype.pullChange = function () {
 		this.nativeImageData = this.ctx.getImageData(0, 0, this.width, this.height);
 		this.data = this.nativeImageData.data;
-	}
+	};
 
 	g.ImageData.prototype.getDataURL = function () {
 		return this.ctx.canvas.toDataURL();

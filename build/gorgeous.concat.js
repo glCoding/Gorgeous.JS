@@ -84,21 +84,21 @@ var gorgeous = {};;
 		var ctx = imd.ctx;
 		setImageDataSize(imd, img.width, img.height);
 		ctx.drawImage(img, 0, 0, img.width, img.height);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function initImageDataFromAnotherImageData(imd, aimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, aimd.width, aimd.height);
 		ctx.putImageData(aimd.nativeImageData, 0, 0);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function initImageDataFromNativeImageData(imd, nimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, nimd.width, nimd.height);
 		ctx.putImageData(nimd, 0, 0);
-		imd.pushChange();
+		imd.pullChange();
 	}
 
 	function getPixels(imd, l, t, w, h, callback) {
@@ -195,7 +195,7 @@ var gorgeous = {};;
 	g.ImageData.prototype.pullChange = function () {
 		this.nativeImageData = this.ctx.getImageData(0, 0, this.width, this.height);
 		this.data = this.nativeImageData.data;
-	}
+	};
 
 	g.ImageData.prototype.getDataURL = function () {
 		return this.ctx.canvas.toDataURL();
@@ -418,17 +418,20 @@ var gorgeous = {};;
 
 	function testAndDo(imda, imdb, process) {
 		if (arithmeticOperationRangeTest(imda, imdb)) {
-			if (imda instanceof g.BinaryImageData) {
-				if (!(imdb instanceof g.BinaryImageData)) {
-					imdb = g.BinaryImageData(imdb);
+			var rimd;
+			if (imdb instanceof imda.constructor) {
+				if (imdb.constructor !== imda.constructor) {
+					rimd = imda.constructor(imdb);
+					process(imda, rimd, rimd);
+				} else {
+					rimd = new imda.constructor(imda);
+					process(rimd, imdb, rimd);
 				}
-			} else if (imda instanceof g.GrayImageData) {
-				if (!(imdb instanceof g.GrayImageData)) {
-					imdb = g.GrayImageData(imdb);
-				}
+			} else {
+				rimd = imdb.constructor(imda);
+				process(rimd, imdb, rimd);
 			}
-			process(imda, imdb, imda);
-			return imda;
+			return rimd;
 		} else {
 			throw arithmeticError;
 		}

@@ -57,7 +57,7 @@ function tests() {
 				&& imd.data instanceof Uint8ClampedArray && imd.nativeImageData instanceof ImageData);
 		}]
 		,
-		['g.ImageData.prototype.toDataURL()', function (test) {
+		['g.ImageData.prototype.getDataURL()', function (test) {
 			var dataURL = g.ImageData(img).getDataURL();
 			test.log('DataURL: ' + dataURL.slice(0, 21));
 			test.pass(dataURL === url);
