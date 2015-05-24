@@ -3,13 +3,16 @@
 	var g = gorgeous;
 	
 	g.ImageData.prototype.negative = function () {
-		for (var i = 0; i < this.data.length; i++) {
-			this.data[i] = 255 - this.data[i];
+		var imd = this.constructor.call(null, this);
+		for (var i = 0; i < imd.data.length; i += 4) {
+			for (var j = i; j < i+3; j++) {
+				imd.data[j] = 255 - imd.data[j];
+			}
 		}
-		this.pushChange();
-		return this;
+		imd.pushChange();
+		return imd;
 	};
-	
+
 	g.ImageData.prototype.transform = function (typeString) {
 		
 	};

@@ -421,6 +421,9 @@ var gorgeous = {};;
 			var rimd;
 			if (imdb instanceof imda.constructor) {
 				if (imdb.constructor !== imda.constructor) {
+					//Attention: must use new operator because 'this' in imda.constructor() will be imda.
+					//It will be good if use imda.constructor.call(null, imdb);
+					//But I leave it here to remind myself.
 					rimd = new imda.constructor(imdb);
 					process(imda, rimd, rimd);
 				} else {
@@ -617,5 +620,24 @@ var gorgeous = {};;
 		} else {
 			throw new Error('Please call g.hsi2rgb() as g.hsi2rgb([H, S, I]).');
 		}
+	};
+} ());;
+(function () {
+	'use strict';
+	var g = gorgeous;
+	
+	g.ImageData.prototype.negative = function () {
+		var imd = this.constructor.call(null, this);
+		for (var i = 0; i < imd.data.length; i += 4) {
+			for (var j = i; j < i+3; j++) {
+				imd.data[j] = 255 - imd.data[j];
+			}
+		}
+		imd.pushChange();
+		return imd;
+	};
+
+	g.ImageData.prototype.transform = function (typeString) {
+		
 	};
 } ());
