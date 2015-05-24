@@ -10,52 +10,23 @@
 	function testAndDo(imda, imdb, process) {
 		if (arithmeticOperationRangeTest(imda, imdb)) {
 			var rimd;
-			var rl, imd1, imd2;
-			var il = g.getLevel(imdb);
-			var tl = g.getLevel(imda);
-			if (il < tl) {
-				rl = il;
-				imd1 = imdb;
-				imd2 = imda;
+			if (imdb instanceof imda.constructor) {
+				if (imdb.constructor !== imda.constructor) {
+					rimd = imda.constructor(imdb);
+					process(imda, rimd, rimd);
+				} else {
+					rimd = new imda.constructor(imda);
+					process(rimd, imdb, rimd);
+				}
 			} else {
-				rl = tl;
-				imd1 = imda;
-				imd2 = imdb;
+				rimd = imdb.constructor(imda);
+				process(rimd, imdb, rimd);
 			}
-			switch (rl) {
-				case 1:
-					rimd = new g.ImageData(imd1);
-					break;
-				case 2:
-					rimd = new g.GrayImageData(imd1);
-					break;
-				case 3:
-					rimd = new g.BinaryImageData(imd1);
-					break;
-				default:
-					rimd = new g.ImageData(imd1);
-			}
-			process(imd1, imd2, rimd);
 			return rimd;
 		} else {
 			throw arithmeticError;
 		}
 	}
-
-	g.ImageData.prototype.add = function (imd) {
-		function process(imd1, imd2, rimd) {
-			var data = rimd.data;
-			for (var i = 0; i < data.length; i += 4) {
-				data[i] += imd2.data[i];
-				data[i+1] += imd2.data[i+1];
-				data[i+2] += imd2.data[i+2];
-				data[i+3] = 255;
-			}
-			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
-		}
-		return testAndDo(this, imd, process);
-	};
 	
 	g.ImageData.prototype.add = function (imd) {
 		function process(imd1, imd2, rimd) {
@@ -67,7 +38,6 @@
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -85,7 +55,6 @@
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -100,7 +69,6 @@
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -115,7 +83,6 @@
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};

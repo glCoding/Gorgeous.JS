@@ -4,6 +4,7 @@
 		["gImageData", "Gorgeous g.ImageData Test"],
 		["gGrayImageData", "Gorgeous g.GrayImageData Test"],
 		["gBinaryImageData", "Gorgeous g.BinaryImageData Test"],
-		["Arithmetic Operations", "Arithmetic Operations Test"]
+		["ArithmeticOperations", "Arithmetic Operations Test"],
+		["IntensityTransformation", "Intensity Transformation Test"]
 	]
 }

@@ -45,24 +45,21 @@
 		var ctx = imd.ctx;
 		setImageDataSize(imd, img.width, img.height);
 		ctx.drawImage(img, 0, 0, img.width, img.height);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function initImageDataFromAnotherImageData(imd, aimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, aimd.width, aimd.height);
 		ctx.putImageData(aimd.nativeImageData, 0, 0);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function initImageDataFromNativeImageData(imd, nimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, nimd.width, nimd.height);
 		ctx.putImageData(nimd, 0, 0);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function getPixels(imd, l, t, w, h, callback) {
@@ -127,9 +124,7 @@
 				callback(pixels[x][y], data, now);
 			}
 		}
-		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
-		imd.nativeImageData = imd.ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	g.ImageData = function (src, callback) {
@@ -153,6 +148,15 @@
 			throw new Error('Need a source to create g.ImageData.');
 		}
 	};
+
+	g.ImageData.prototype.pushChange = function () {
+		this.ctx.putImageData(this.nativeImageData, 0, 0);
+	};
+	
+	g.ImageData.prototype.pullChange = function () {
+		this.nativeImageData = this.ctx.getImageData(0, 0, this.width, this.height);
+		this.data = this.nativeImageData.data;
+	}
 
 	g.ImageData.prototype.getDataURL = function () {
 		return this.ctx.canvas.toDataURL();
@@ -236,7 +240,7 @@
 	g.ImageData.prototype.paste = function (nimd, l, t, w, h) {
 		w = (w) ? ((w < nimd.width) ? w : nimd.width) : nimd.width;
 		h = (h) ? ((h < nimd.height) ? h : nimd.height) : nimd.height;
-		this.ctx.putImageData(nimd, l, t, 0, 0, w, h);
+		this.pushChange();
 	};
 
 	g.GrayImageData = function (src, intensity, callback) {

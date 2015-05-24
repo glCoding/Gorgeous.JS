@@ -25,17 +25,7 @@
 		imd.nativeImageData = imd.ctx.getImageData(0, 0, width || 1, height || 1);
 		imd.data = imd.nativeImageData.data;
 	};
-	
-	g.getLevel = function (imd) {
-		if(imd instanceof g.BinaryImageData) {
-			return 3;
-		} else if (imd instanceof g.GrayImageData) {
-			return 2;
-		} else if (imd instanceof g.ImageData) {
-			return 1;
-		}
-	};
-	
+
 	g.createBlankImageData = function (which, width, height) {
 		function Helper() {};
 		Helper.prototype = which.prototype;

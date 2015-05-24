@@ -46,24 +46,21 @@ var gorgeous = {};;
 		var ctx = imd.ctx;
 		setImageDataSize(imd, img.width, img.height);
 		ctx.drawImage(img, 0, 0, img.width, img.height);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function initImageDataFromAnotherImageData(imd, aimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, aimd.width, aimd.height);
 		ctx.putImageData(aimd.nativeImageData, 0, 0);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function initImageDataFromNativeImageData(imd, nimd) {
 		var ctx = imd.ctx;
 		setImageDataSize(imd, nimd.width, nimd.height);
 		ctx.putImageData(nimd, 0, 0);
-		imd.nativeImageData = ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	function getPixels(imd, l, t, w, h, callback) {
@@ -128,9 +125,7 @@ var gorgeous = {};;
 				callback(pixels[x][y], data, now);
 			}
 		}
-		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
-		imd.nativeImageData = imd.ctx.getImageData(0, 0, imd.width, imd.height);
-		imd.data = imd.nativeImageData.data;
+		imd.pushChange();
 	}
 
 	g.ImageData = function (src, callback) {
@@ -154,6 +149,15 @@ var gorgeous = {};;
 			throw new Error('Need a source to create g.ImageData.');
 		}
 	};
+
+	g.ImageData.prototype.pushChange = function () {
+		this.ctx.putImageData(this.nativeImageData, 0, 0);
+	};
+	
+	g.ImageData.prototype.pullChange = function () {
+		this.nativeImageData = this.ctx.getImageData(0, 0, this.width, this.height);
+		this.data = this.nativeImageData.data;
+	}
 
 	g.ImageData.prototype.getDataURL = function () {
 		return this.ctx.canvas.toDataURL();
@@ -237,7 +241,7 @@ var gorgeous = {};;
 	g.ImageData.prototype.paste = function (nimd, l, t, w, h) {
 		w = (w) ? ((w < nimd.width) ? w : nimd.width) : nimd.width;
 		h = (h) ? ((h < nimd.height) ? h : nimd.height) : nimd.height;
-		this.ctx.putImageData(nimd, l, t, 0, 0, w, h);
+		this.pushChange();
 	};
 
 	g.GrayImageData = function (src, intensity, callback) {
@@ -392,17 +396,7 @@ var gorgeous = {};;
 		imd.nativeImageData = imd.ctx.getImageData(0, 0, width || 1, height || 1);
 		imd.data = imd.nativeImageData.data;
 	};
-	
-	g.getLevel = function (imd) {
-		if(imd instanceof g.BinaryImageData) {
-			return 3;
-		} else if (imd instanceof g.GrayImageData) {
-			return 2;
-		} else if (imd instanceof g.ImageData) {
-			return 1;
-		}
-	};
-	
+
 	g.createBlankImageData = function (which, width, height) {
 		function Helper() {};
 		Helper.prototype = which.prototype;
@@ -424,53 +418,21 @@ var gorgeous = {};;
 
 	function testAndDo(imda, imdb, process) {
 		if (arithmeticOperationRangeTest(imda, imdb)) {
-			var rimd;
-			var rl, imd1, imd2;
-			var il = g.getLevel(imdb);
-			var tl = g.getLevel(imda);
-			if (il < tl) {
-				rl = il;
-				imd1 = imdb;
-				imd2 = imda;
-			} else {
-				rl = tl;
-				imd1 = imda;
-				imd2 = imdb;
+			if (imda instanceof g.BinaryImageData) {
+				if (!(imdb instanceof g.BinaryImageData)) {
+					imdb = g.BinaryImageData(imdb);
+				}
+			} else if (imda instanceof g.GrayImageData) {
+				if (!(imdb instanceof g.GrayImageData)) {
+					imdb = g.GrayImageData(imdb);
+				}
 			}
-			switch (rl) {
-				case 1:
-					rimd = new g.ImageData(imd1);
-					break;
-				case 2:
-					rimd = new g.GrayImageData(imd1);
-					break;
-				case 3:
-					rimd = new g.BinaryImageData(imd1);
-					break;
-				default:
-					rimd = new g.ImageData(imd1);
-			}
-			process(imd1, imd2, rimd);
-			return rimd;
+			process(imda, imdb, imda);
+			return imda;
 		} else {
 			throw arithmeticError;
 		}
 	}
-
-	g.ImageData.prototype.add = function (imd) {
-		function process(imd1, imd2, rimd) {
-			var data = rimd.data;
-			for (var i = 0; i < data.length; i += 4) {
-				data[i] += imd2.data[i];
-				data[i+1] += imd2.data[i+1];
-				data[i+2] += imd2.data[i+2];
-				data[i+3] = 255;
-			}
-			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
-		}
-		return testAndDo(this, imd, process);
-	};
 	
 	g.ImageData.prototype.add = function (imd) {
 		function process(imd1, imd2, rimd) {
@@ -482,7 +444,6 @@ var gorgeous = {};;
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -500,7 +461,6 @@ var gorgeous = {};;
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -515,7 +475,6 @@ var gorgeous = {};;
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};
@@ -530,7 +489,6 @@ var gorgeous = {};;
 				data[i+3] = 255;
 			}
 			rimd.ctx.putImageData(rimd.nativeImageData, 0, 0);
-			return rimd;
 		}
 		return testAndDo(this, imd, process);
 	};

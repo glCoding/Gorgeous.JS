@@ -83,6 +83,27 @@ Test(
 				});
 			});
 		});
+	}],
+	['Subtract Operation With g.GrayImageData & g.ImageData', function (test) {
+		ctx1.fillStyle = 'rgb(111, 129, 100)';
+		ctx1.fillRect(0, 0, 120, 120);
+		ctx2.fillStyle = 'rgb(187, 221, 225)';
+		ctx2.fillRect(0, 0, 120, 120);
+		var imd1 = g.ImageData(canvas1);
+		var imd2 = g.GrayImageData(canvas2);
+		var rimd = imd2.sub(imd1);
+		rimd.getImage(function (img) {
+			test.show('Diff Image', img);
+			test.pass(function () {
+				var ps = rimd.getPixels();
+				return ps.every(function (p) {
+					if (p.l !== 98) {
+						return false;
+					}
+					return true;
+				});
+			});
+		});
 	}]
 );
 }
