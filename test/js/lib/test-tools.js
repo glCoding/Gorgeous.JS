@@ -52,7 +52,7 @@ var Test = function () {
 	
 	(function () {
 		var i = 0;
-		chunk();
+		setTimeout(chunk, 100);
 
 		function chunk() {
 			if (i >= args.length) {
