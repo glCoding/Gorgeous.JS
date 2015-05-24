@@ -12,14 +12,17 @@
 			var rimd;
 			if (imdb instanceof imda.constructor) {
 				if (imdb.constructor !== imda.constructor) {
-					rimd = imda.constructor(imdb);
+					//Attention: must use new operator because 'this' in imda.constructor() will be imda.
+					//It will be good if use imda.constructor.call(null, imdb);
+					//But I leave it here to remind myself.
+					rimd = new imda.constructor(imdb);
 					process(imda, rimd, rimd);
 				} else {
 					rimd = new imda.constructor(imda);
 					process(rimd, imdb, rimd);
 				}
 			} else {
-				rimd = imdb.constructor(imda);
+				rimd = new imdb.constructor(imda);
 				process(rimd, imdb, rimd);
 			}
 			return rimd;

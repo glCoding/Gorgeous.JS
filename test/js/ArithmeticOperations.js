@@ -97,7 +97,7 @@ Test(
 			test.pass(function () {
 				var ps = rimd.getPixels();
 				return ps.every(function (p) {
-					if (p.l !== 98) {
+					if (p.r !== 100 || p.g !== 82 || p.b !== 111) {
 						return false;
 					}
 					return true;
