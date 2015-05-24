@@ -3,7 +3,11 @@ var g = gorgeous;
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
 var src = 'img/baboon.png';
+var load = document.createElement('h3');
+load.innerHTML = 'loading img/baboon.png, please wait for a while.';
+document.body.appendChild(load);
 var img = g.loadImage(src, function () {
+	load.innerHTML = 'img/baboon.png loaded.';
 	canvas.width = 200;
 	canvas.height = 200;
 	tests();
