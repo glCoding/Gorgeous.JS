@@ -123,6 +123,136 @@ function tests() {
 		neimd.getImage(function (img) {
 			test.show('Transformed Image', img);
 		});
+	}],
+	['Gray Image Histogram Equalization', function (test) {
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, 200, 200);
+		var cimd = new g.GrayImageData(ctx);
+		var dist = [];
+		dist[100] = 5000;
+		dist[110] = 5000;
+		dist[120] = 5000;
+		dist[130] = 5000;
+		dist[140] = 5000;
+		dist[150] = 5000;
+		dist[160] = 5000;
+		dist[170] = 5000;
+		var ps = cimd.getPixels();
+		ps.each(function (p) {
+			var done = false;
+			var w;
+			while (!done) {
+				w = 10 * (10 + Math.floor(Math.random() * 8));
+				if(dist[w] !== 0) {
+					dist[w] -= 1;
+					p.l = w;
+					done = true;
+				}
+			}
+		});
+		cimd.setPixels(ps);
+		var hcimd = cimd.histogramEqualize();
+		cimd.getImage(function (img) {
+			test.show('Original Image', img);
+		});
+		hcimd.getImage(function (img) {
+			test.show('Histogram Equalization', img);
+		});
+		var gimd = new g.GrayImageData(img);
+		var himd = gimd.histogramEqualize();
+		gimd.getImage(function (img) {
+			test.log('Baboon Image');
+			test.show('Original Image', img);
+		});
+		himd.getImage(function (img) {
+			test.show('Histogram Equalization', img);
+		});
+		var psp = hcimd.getPixels();
+		test.pass(psp.each(function (p, x, y) {
+			switch (ps[x][y].l) {
+				case 100:
+					return p.l === 31;
+				case 110:
+					return p.l === 63;
+				case 120:
+					return p.l === 95;
+				case 130:
+					return p.l === 127;
+				case 140:
+					return p.l === 159;
+				case 150:
+					return p.l === 191;
+				case 160:
+					return p.l === 223;
+				case 170:
+					return p.l === 255;
+			}
+		}));
+	}],
+	['Image Histogram Equalization', function (test) {
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, 200, 200);
+		var cimd = new g.GrayImageData(ctx);
+		var dist = [];
+		dist[100] = 5000;
+		dist[110] = 5000;
+		dist[120] = 5000;
+		dist[130] = 5000;
+		dist[140] = 5000;
+		dist[150] = 5000;
+		dist[160] = 5000;
+		dist[170] = 5000;
+		var ps = cimd.getPixels();
+		ps.each(function (p) {
+			var done = false;
+			var w;
+			while (!done) {
+				w = 10 * (10 + Math.floor(Math.random() * 8));
+				if(dist[w] !== 0) {
+					dist[w] -= 1;
+					p.l = w;
+					done = true;
+				}
+			}
+		});
+		cimd.setPixels(ps);
+		var hcimd = cimd.histogramEqualize();
+		cimd.getImage(function (img) {
+			test.show('Original Image', img);
+		});
+		hcimd.getImage(function (img) {
+			test.show('Histogram Equalization', img);
+		});
+		var imd = new g.ImageData(img);
+		var himd = imd.histogramEqualize();
+		imd.getImage(function (img) {
+			test.log('Baboon Image');
+			test.show('Original Image', img);
+		});
+		himd.getImage(function (img) {
+			test.show('Histogram Equalization', img);
+		});
+		var psp = hcimd.getPixels();
+		test.pass(psp.each(function (p, x, y) {
+			switch (ps[x][y].l) {
+				case 100:
+					return p.l === 31;
+				case 110:
+					return p.l === 63;
+				case 120:
+					return p.l === 95;
+				case 130:
+					return p.l === 127;
+				case 140:
+					return p.l === 159;
+				case 150:
+					return p.l === 191;
+				case 160:
+					return p.l === 223;
+				case 170:
+					return p.l === 255;
+			}
+		}));
 	}]
 	);
 }
