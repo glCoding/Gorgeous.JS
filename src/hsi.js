@@ -1,122 +1,108 @@
-(function () {
-	'use strict';
-	var g = gorgeous;
+(function (g) {
 
-	function hue(R, G, B) {
-		var r_g = R - G;
-		var r_b = R - B;
-		var g_b = G - B;
-		var theta = Math.acos(0.5 * (r_g + r_b) / (Math.sqrt((r_g * r_g + r_b * g_b)) + 0.00001));
-		return 255 * ((B <= G) ? theta : (Math.PI * 2 - theta)) / (2 * Math.PI);
+	g.ImageData.prototype.updateHSI = function () {
+		var length = this.data.length;
+		var data = this.data;
+		if (!this.hsiData) {
+			this.hsiData = new Uint8ClampedArray(length);
+		}
+		var hsiData = this.hsiData;
+		for (var i = 0; i < length; i += 4) {
+			var hsi = g.rgb2hsi(data[i], data[i + 1], data[i + 2]);
+			hsiData[i] = hsi.h;
+			hsiData[i + 1] = hsi.s;
+			hsiData[i + 2] = hsi.i;
+			hsiData[i + 3] = data[i + 3];
+		}
+		this.__synchronized = true;
+		return this;
+	};
+
+	g.ImageData.prototype.updateRGB = function () {
+		if (!this.hsiData) {
+			throw new Error('There is no hsiData field yet.');
+		}
+		var length = this.data.length;
+		var data = this.data;
+		var hsiData = this.hsiData;
+		for (var i = 0; i < length; i += 4) {
+			var rgb = g.hsi2rgb(hsiData[i], hsiData[i + 1], hsiData[i + 2]);
+			data[i] = rgb.r;
+			data[i + 1] = rgb.g;
+			data[i + 2] = rgb.b;
+			data[i + 3] = hsiData[i + 3];
+		}
+		this.pushChange();
+		this.__synchronized = true;
+		return this;
+	};
+	
+	function commonOperationForGet(self, ops, hsi) {
+		if (hsi && !self.__synchronized) {
+			self.updateHSI();
+		}
+		var hsiData = self.hsiData;
+		var imd = new g.ImageData(self);
+		var data = imd.data;
+		if (!(ops instanceof Function)) {
+			throw new Error('need operations.');
+		}
+		for (var i = 0; i < data.length; i += 4) {
+			ops(i, data, hsiData);
+		}
+		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
+		return imd;
 	}
 
-	function saturation(R, G, B) {
-		var m = Math.min(R, G, B);
-		return 255 * (1 - 3 * m / (R + G + B + 0.00001));
-	}
+	g.ImageData.prototype.getR = function () {
+		return commonOperationForGet(this, function (i, data) {
+			data[i+1] = data[i+2] = 0;
+		}, false);
+	};
 
-	function intensity(R, G, B) {
-		return (R + G + B) / 3;
-	}
+	g.ImageData.prototype.getG = function () {
+		return commonOperationForGet(this, function (i, data) {
+			data[i] = data[i+2] = 0;
+		}, false);
+	};
+
+	g.ImageData.prototype.getB = function () {
+		return commonOperationForGet(this, function (i, data) {
+			data[i] = data[i+1] = 0;
+		}, false);
+	};
 
 	g.ImageData.prototype.getH = function () {
-		var himd = g.createBlankImageData(g.GrayImageData, this.width, this.height);
-		for (var i = 0; i < this.data.length; i += 4) {
-			himd.data[i] = himd.data[i + 1] = himd.data[i + 2] = hue(this.data[i], this.data[i + 1], this.data[i + 2]);
-			himd.data[i + 3] = 255;
-		}
-		himd.ctx.putImageData(himd.nativeImageData, 0, 0);
-		return himd;
+		var imd = commonOperationForGet(this, function (i, data, hsiData) {
+			data[i] = data[i+1] = data[i+2] = hsiData[i];
+		}, true);
+		this.__synchronized = true;
+		return imd;
 	};
 
 	g.ImageData.prototype.getS = function () {
-		var simd = g.createBlankImageData(g.GrayImageData, this.width, this.height);
-		for (var i = 0; i < this.data.length; i += 4) {
-			simd.data[i] = simd.data[i + 1] = simd.data[i + 2] = saturation(this.data[i], this.data[i + 1], this.data[i + 2]);
-			simd.data[i + 3] = 255;
-		}
-		simd.ctx.putImageData(simd.nativeImageData, 0, 0);
-		return simd;
+		var imd = commonOperationForGet(this, function (i, data, hsiData) {
+			data[i] = data[i+1] = data[i+2] = hsiData[i+1];
+		}, true);
+		this.__synchronized = true;
+		return imd;
 	};
 
 	g.ImageData.prototype.getI = function () {
-		var iimd = g.createBlankImageData(g.GrayImageData, this.width, this.height);
-		for (var i = 0; i < this.data.length; i += 4) {
-			iimd.data[i] = iimd.data[i + 1] = iimd.data[i + 2] = intensity(this.data[i], this.data[i + 1], this.data[i + 2]);
-			iimd.data[i + 3] = 255;
-		}
-		iimd.ctx.putImageData(iimd.nativeImageData, 0, 0);
-		return iimd;
+		var imd = commonOperationForGet(this, function (i, data, hsiData) {
+			data[i] = data[i+1] = data[i+2] = hsiData[i+2];
+		}, true);
+		this.__synchronized = true;
+		return imd;
 	};
-
+	
 	g.ImageData.prototype.getHSI = function () {
-		var imd = g.createBlankImageData(g.ImageData, this.width, this.height);
-		for (var i = 0; i < this.data.length; i += 4) {
-			imd.data[i] = hue(this.data[i], this.data[i + 1], this.data[i + 2]);
-			imd.data[i + 1] = saturation(this.data[i], this.data[i + 1], this.data[i + 2]);
-			imd.data[i + 2] = intensity(this.data[i], this.data[i + 1], this.data[i + 2]);
-			imd.data[i + 3] = 255;
-		}
-		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
-		return imd;
-	};
-
-	g.ImageData.prototype.getRGB = function () {
-		var imd = g.createBlankImageData(g.ImageData, this.width, this.height);
-		for (var i = 0; i < this.data.length; i += 4) {
-			var rgb = g.hsi2rgb([this.data[i], this.data[i + 1], this.data[i + 2]]);
-			imd.data[i] = rgb[0];
-			imd.data[i + 1] = rgb[1];
-			imd.data[i + 2] = rgb[2];
-			imd.data[i + 3] = 255;
-		}
-		imd.ctx.putImageData(imd.nativeImageData, 0, 0);
-		return imd;
-	};
-
-	g.rgb2hsi = function (c) {
-		if (c instanceof Array) {
-			return [hue(c[0], c[1], c[2]), saturation(c[0], c[1], c[2]), intensity(c[0], c[1], c[2])];
-		} else {
-			throw new Error('Please call g.rgb2hsi() as g.rgb2hsi([R, G, B]).');
-		}
-	};
-
-	g.hsi2rgb = function (c) {
-		var r120 = Math.PI * 120 / 180;
-		var r240 = Math.PI * 240 / 180;
-		function X(S, I) {
-			return I * (1 - S); //I(1-S)
-		}
-		function Y(H, S, I) {
-			return I * (1 + S * Math.cos(H) / Math.cos(Math.PI / 3 - H)); //I(1 + S * (cosH / cos(60-H)))
-		}
-		function Z(I, V, W) {
-			return 3 * I - V - W;
-		}
-		if (c instanceof Array) {
-			var H, S, I, R, G, B;
-			H = c[0] / 255 * (Math.PI * 2),
-			S = c[1] / 255,
-			I = c[2];
-			if (H > r240) {
-				H = H - r240;
-				G = X(S, I);
-				B = Y(H, S, I);
-				R = Z(I, G, B);
-			} else if (H > r120) {
-				H = H - r120;
-				R = X(S, I);
-				G = Y(H, S, I);
-				B = Z(I, G, R);
-			} else {
-				B = X(S, I);
-				R = Y(H, S, I);
-				G = Z(I, R, B);
+		var imd = commonOperationForGet(this, function (i, data, hsiData) {
+			for (var j = 0; j < 4; j++) {
+				data[i+j] = hsiData[i+j];
 			}
-			return [R, G, B];
-		} else {
-			throw new Error('Please call g.hsi2rgb() as g.hsi2rgb([H, S, I]).');
-		}
+		}, true);
+		this.__synchronized = true;
+		return imd;
 	};
-} ());
+} (gorgeous));

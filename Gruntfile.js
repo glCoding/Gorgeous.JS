@@ -7,13 +7,17 @@ module.exports = function(grunt) {
         separator: ';\n',
       },
       build: {
-        src: ['src/gorgeous.js', 'src/tools.js', 'src/classes.js', 'src/arithmetic.js', 'src/hsi.js'
-              , 'src/adjust.js', 'src/intensityTransformations.js'],
+        src: [
+          'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
+          'src/histogram.js'
+        ],
         dest: 'build/gorgeous.concat.js'
       },
       test: {
-        src: ['src/gorgeous.js', 'src/classes.js', 'src/tools.js', 'src/arithmetic.js', 'src/hsi.js'
-              , 'src/adjust.js', 'src/intensityTransformations.js'],
+        src: [
+          'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
+          'src/histogram.js'
+        ],
         dest: 'build/gorgeous.js'
       }
     },

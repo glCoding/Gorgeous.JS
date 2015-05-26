@@ -1,10 +1,10 @@
 {
 	"tests": [
-		["gtools", "Gorgeous Tools Test"],
-		["gImageData", "Gorgeous g.ImageData Test"],
-		["gGrayImageData", "Gorgeous g.GrayImageData Test"],
-		["gBinaryImageData", "Gorgeous g.BinaryImageData Test"],
-		["ArithmeticOperations", "Arithmetic Operations Test"],
-		["IntensityTransformation", "Intensity Transformation Test"]
+		["tools", "Test gorgeous tools"],
+		["g.ImageData", "Test g.ImageData constructor"],
+		["hsi", "HSI&RGB Test"],
+		["pixels", "Pixel Operations Test"],
+		["intensity", "Intensity Operations Test"],
+		["histogram", "Histogram Operations Test"]
 	]
 }
