@@ -59,6 +59,22 @@
 			arr[i] = Math.pow(arr[i], n) * c;
 		});
 	};
+	
+	function histogramEqualize(o, width, height) {
+		var r = new Array(256);
+		var invsize = 1 / (width * height);
+		for (var k = 0; k < 256; k++) {
+			o[k] *= invsize;
+		}
+		for (var l = 0; l < 256; l++) {
+			r[l] = 0;
+			for (var m = 0; m <= l; m++) {
+				r[l] += o[m];
+			}
+			r[l] = Math.round(r[l] * 255);
+		}
+		return r;
+	}
 
 	g.GrayImageData.prototype.histogramEqualize = function () {
 		if (this instanceof g.BinaryImageData) {
@@ -66,24 +82,13 @@
 		}
 		var gimd = new g.GrayImageData(this);
 		var histogramDistributionA = new Array(256);
-		var histogramDistributionB = new Array(256);
-		var invsize = 1 / (gimd.width * gimd.height);
 		for (var i = 0; i < 256; i++) {
 			histogramDistributionA[i] = 0;
 		}
 		for (var j = 0; j < gimd.data.length; j += 4) {
 			histogramDistributionA[gimd.data[j]] += 1;
 		}
-		for (var k = 0; k < 256; k++) {
-			histogramDistributionA[k] *= invsize;
-		}
-		for (var l = 0; l < 256; l++) {
-			histogramDistributionB[l] = 0;
-			for (var m = 0; m <= l; m++) {
-				histogramDistributionB[l] += histogramDistributionA[m];
-			}
-			histogramDistributionB[l] = Math.round(histogramDistributionB[l] * 255);
-		}
+		var histogramDistributionB = histogramEqualize(histogramDistributionA, gimd.width, gimd.height);
 		for (var n = 0; n < gimd.data.length; n += 4) {
 			var nv = histogramDistributionB[gimd.data[n]];
 			gimd.data[n] = gimd.data[n+1] = gimd.data[n+2] = nv;
@@ -95,24 +100,13 @@
 	g.ImageData.prototype.histogramEqualize = function () {
 		var imd = this.getHSI();
 		var histogramDistributionA = new Array(256);
-		var histogramDistributionB = new Array(256);
-		var invsize = 1 / (imd.width * imd.height);
 		for (var i = 0; i < 256; i++) {
 			histogramDistributionA[i] = 0;
 		}
 		for (var j = 0; j < imd.data.length; j += 4) {
 			histogramDistributionA[imd.data[j+2]] += 1;
 		}
-		for (var k = 0; k < 256; k++) {
-			histogramDistributionA[k] *= invsize;
-		}
-		for (var l = 0; l < 256; l++) {
-			histogramDistributionB[l] = 0;
-			for (var m = 0; m <= l; m++) {
-				histogramDistributionB[l] += histogramDistributionA[m];
-			}
-			histogramDistributionB[l] = Math.round(histogramDistributionB[l] * 255);
-		}
+		var histogramDistributionB = histogramEqualize(histogramDistributionA, imd.width, imd.height);
 		for (var n = 0; n < imd.data.length; n += 4) {
 			imd.data[n+2] = histogramDistributionB[imd.data[n+2]];
 		}
