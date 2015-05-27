@@ -38,7 +38,7 @@ g.loadImage(src, function (img) {
 				1, 1, 1
 			].map(function (v) { return v / 9; }));
 			g.convolution(matrix, width, height, kernel);
-
+			console.log(matrix);
 			test.pass(res.every(function (v, i) {
 				return v === matrix[i];
 			}));
@@ -51,35 +51,22 @@ g.loadImage(src, function (img) {
 			].map(function (v) { return v / 9; });
 			g.registerKernel('平均值', k);
 			test.pass(g.kernels['平均值'].every(function (v) {
-				return v.every(function (v) {
-					return v === 1 / 9;
-				});
+				return v === 1 / 9;
 			}));
 		}],
 		['use kernel', function (test) {
 			var imd = new g.ImageData(img);
-			imd.useKernel('平均值');
-			imd.getImage(function (img) {
-				test.show('平均值掩模', img);
+			var k = [
+				-1, -1, 0,
+				-1, 0, 1,
+				0, 1, 1
+			];
+			g.registerKernel('Emboss', k);
+			console.time('use kernel');
+			imd.useKernel('Emboss').gray().getImage(function (img) {
+				test.show('Emboss', img);
 			});
-			g.registerKernel('拉普拉斯', [
-				-1, -1, -1,
-				-1, 8, -1,
-				-1, -1, -1
-			]);
-			imd.useKernel('拉普拉斯');
-			imd.getImage(function (img) {
-				test.show('拉普拉斯掩模', img);
-			});
-			g.registerKernel('Sobel', [
-				-1, -2, -1,
-				0, 0, 0,
-				1, 2, 1
-			]);
-			imd.useKernel('Sobel');
-			imd.getImage(function (img) {
-				test.show('Sobel', img);
-			});
+			console.timeEnd('use kernel');
 		}]
-	);
+		);
 });
