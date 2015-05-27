@@ -9,14 +9,14 @@ module.exports = function(grunt) {
       build: {
         src: [
           'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
-          'src/histogram.js', 'src/kernel.js'
+          'src/histogram.js', 'src/filter.js', 'src/filters/blur.js'
         ],
         dest: 'build/gorgeous.concat.js'
       },
       test: {
         src: [
           'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
-          'src/histogram.js', 'src/kernel.js'
+          'src/histogram.js', 'src/filter.js', 'src/filters/blur.js'
         ],
         dest: 'build/gorgeous.js'
       }

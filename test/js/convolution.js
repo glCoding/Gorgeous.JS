@@ -49,22 +49,19 @@ g.loadImage(src, function (img) {
 				1, 1, 1,
 				1, 1, 1
 			].map(function (v) { return v / 9; });
-			g.registerKernel('平均值', k);
+			g.registerFilter('平均值', k);
 			test.pass(g.kernels['平均值'].every(function (v) {
 				return v === 1 / 9;
 			}));
 		}],
 		['use kernel', function (test) {
 			var imd = new g.ImageData(img);
-			var k = [
-				-1, -1, 0,
-				-1, 0, 1,
-				0, 1, 1
-			];
-			g.registerKernel('Emboss', k);
+			imd.getImage(function (img) {
+				test.show('Original Image', img);
+			});
 			console.time('use kernel');
-			imd.useKernel('Emboss').gray().getImage(function (img) {
-				test.show('Emboss', img);
+			imd.useFilter('Gossian Blur').getImage(function (img) {
+				test.show('Gossian Blur', img);
 				test.pass(img instanceof Image);
 			});
 			console.timeEnd('use kernel');

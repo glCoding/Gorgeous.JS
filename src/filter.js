@@ -48,22 +48,28 @@
 
 	g.kernels = {};
 
-	g.registerKernel = function (name, kernel) {
+	g.registerFilter = function (name, kernel) {
 		if (typeof kernel === 'string') {
 			if (!g.kernels[kernel]) {
 				throw new Error('no ' + kernel + ' in g.kernels.');
 			}
 			g.kernels[name] = g.kernels[kernel];
+		} else if (kernel instanceof Function) {
+			g.kernels[name] = kernel;
 		} else {
 			g.kernels[name] = g.makeKernel(kernel);
 		}
 		return g;
 	};
 
-	g.ImageData.prototype.useKernel = function (name) {
+	g.ImageData.prototype.useFilter = function (name) {
 		var kernel = g.kernels[name];
-		g.convolution(this.data, this.width, this.height, kernel);
-		this.pushChange();
+		if (kernel instanceof Function) {
+			kernel.apply(this, arguments);
+		} else {
+			g.convolution(this.data, this.width, this.height, kernel);
+			this.pushChange();
+		}
 		return this;
 	};
 
