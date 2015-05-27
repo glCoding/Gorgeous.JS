@@ -65,6 +65,7 @@ g.loadImage(src, function (img) {
 			console.time('use kernel');
 			imd.useKernel('Emboss').gray().getImage(function (img) {
 				test.show('Emboss', img);
+				test.pass(img instanceof Image);
 			});
 			console.timeEnd('use kernel');
 		}]
