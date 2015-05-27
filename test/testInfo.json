@@ -6,6 +6,6 @@
 		["pixels", "Pixel Operations Test"],
 		["intensity", "Intensity Operations Test"],
 		["histogram", "Histogram Operations Test"],
-		["convolution", "Convolution Test"]
+		["Convolution", "Convolution Test"]
 	]
 }

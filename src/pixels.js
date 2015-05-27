@@ -113,6 +113,7 @@
 			data[now + 2] = p.b;
 			data[now + 3] = p.a;
 		}, false);
+		return this;
 	};
 
 	g.ImageData.prototype.getHSIPixels = function (l, t, w, h) {
@@ -134,5 +135,6 @@
 			data[now + 3] = p.a;
 		}, true);
 		this.__synchronized = true;
+		return this;
 	};
 } (gorgeous));

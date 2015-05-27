@@ -24,7 +24,6 @@
 			} else {
 				data[i] = data[i + 1] = data[i + 2] = 0;
 			}
-
 		}
 		this.pushChange();
 		return this;

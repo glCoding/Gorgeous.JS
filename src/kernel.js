@@ -1,6 +1,6 @@
 (function (g) {
 
-	function makeKernel(array) {
+	g.makeKernel = function (array) {
 		if (!array) {
 			return null;
 		}
@@ -25,7 +25,7 @@
 		if (arguments.length === 4) {
 			kernel3 = kernel2 = kernel1;
 		}
-		var k = [makeKernel(kernel1), makeKernel(kernel2), makeKernel(kernel3)];
+		var k = [kernel1, kernel2, kernel3];
 		for (var i = 0; i < 3; i++) {
 			var kk = k[i];
 			if (kk) {
@@ -48,6 +48,46 @@
 				}
 			}
 		}
+		return oMatrix;
+	};
+
+	g.kernels = {};
+
+	g.registerKernel = function (name, kernels) {
+		if (typeof kernels === 'string') {
+			g.kernels[name] = g.kernels[kernels];
+		} else if (typeof kernels[0] === 'number') {
+			var ks = [];
+			ks[0] = ks[1] = ks[2] = g.makeKernel(kernels);
+			g.kernels[name] = ks;
+		} else {
+			g.kernels[name] = kernels.map(function (v) {
+				return g.makeKernel(v);
+			});
+		}
+		return g;
+	};
+
+	g.ImageData.prototype.useKernel = function (name, hsi, c1, c2, c3) {
+		var kernels = g.kernels[name];
+		if (arguments.length > 2) {
+			kernels[0] = c1 ? kernels[0] : null;
+			kernels[1] = c2 ? kernels[1] : null;
+			kernels[2] = c3 ? kernels[2] : null;
+		}
+		if (hsi) {
+			if (!(this.__synchronized)) {
+				this.updateHSI();
+			}
+			g.convolution(this.hsiData, this.width, this.height, kernels[0], kernels[1], kernels[2]);
+			this.updateRGB();
+			this.pushChange();
+			this.__synchronized = true;
+		} else {
+			g.convolution(this.data, this.width, this.height, kernels[0], kernels[1], kernels[2]);
+			this.pushChange();
+		}
+		return this;
 	};
 
 } (gorgeous));
