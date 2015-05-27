@@ -5,6 +5,7 @@
 		["hsi", "HSI&RGB Test"],
 		["pixels", "Pixel Operations Test"],
 		["intensity", "Intensity Operations Test"],
-		["histogram", "Histogram Operations Test"]
+		["histogram", "Histogram Operations Test"],
+		["convolution", "Convolution Test"]
 	]
 }
