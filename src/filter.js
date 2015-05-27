@@ -65,11 +65,11 @@
 	g.ImageData.prototype.useFilter = function (name) {
 		var kernel = g.kernels[name];
 		if (kernel instanceof Function) {
-			kernel.apply(this, arguments);
+			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
 		} else {
 			g.convolution(this.data, this.width, this.height, kernel);
-			this.pushChange();
 		}
+		this.pushChange();
 		return this;
 	};
 

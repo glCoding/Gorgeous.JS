@@ -6,6 +6,8 @@
 		["pixels", "Pixel Operations Test"],
 		["intensity", "Intensity Operations Test"],
 		["histogram", "Histogram Operations Test"],
-		["convolution", "Convolution Test"]
+		["convolution", "Convolution Test"],
+		["blur", "Blur Test"],
+		["sharpen", "Sharpen Test"]
 	]
 }

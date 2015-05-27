@@ -53,18 +53,6 @@ g.loadImage(src, function (img) {
 			test.pass(g.kernels['平均值'].every(function (v) {
 				return v === 1 / 9;
 			}));
-		}],
-		['use kernel', function (test) {
-			var imd = new g.ImageData(img);
-			imd.getImage(function (img) {
-				test.show('Original Image', img);
-			});
-			console.time('use kernel');
-			imd.useFilter('Gossian Blur').getImage(function (img) {
-				test.show('Gossian Blur', img);
-				test.pass(img instanceof Image);
-			});
-			console.timeEnd('use kernel');
 		}]
 		);
 });
