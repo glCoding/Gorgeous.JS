@@ -1,7 +1,7 @@
 //Test:Convolution Test
 var g = gorgeous;
 
-var src = 'img/beauty.jpg';
+var src = 'img/baboon.png';
 var tip = document.createElement('h3');
 tip.innerHTML = 'Loading baboon image, please wait...';
 document.body.appendChild(tip);
