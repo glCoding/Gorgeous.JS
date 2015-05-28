@@ -31,8 +31,8 @@ g.loadImage('img/baboon.png', function (oimg) {
 })
 ```
 效果如下：
-![原始图像][1]
 
+![原始图像][1]
 
 ![处理后的图像][2]
 
