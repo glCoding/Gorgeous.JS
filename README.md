@@ -37,3 +37,5 @@ g.loadImage('img/baboon.png', function (oimg) {
 
   [1]: http://foolyou.github.io/Gorgeous.JS/images/README/o.png
   [2]: http://foolyou.github.io/Gorgeous.JS/images/README/r.png
+  
+@Author: chen-an@outlook.com
