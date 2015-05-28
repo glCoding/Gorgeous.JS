@@ -38,7 +38,7 @@ g.loadImage('img/baboon.png', function (oimg) {
 
 Github地址：https://github.com/Foolyou/Gorgeous.JS
 
-邮箱: chen-an@outlook.com
+邮箱： chen-an@outlook.com
 
 知乎： [@陈安][zhihu]
 
@@ -55,7 +55,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 
 首先我们做一个小Demo，大致了解Gorgeous的使用方式：
 
- 1. 在[这里][3]获取Gorgeous.JS，也可以在[Github Repo][4]获取完整的仓库，执行<code>npm run build</code>（这需要提前准备好node.js环境）之后在build目录下获取gorgeous.min.js。
+ 1. 在[这里][3]获取Gorgeous.JS，也可以在[Github Repo][4]获取完整的仓库，执行<code>npm run build</code>（需要node.js环境）之后在build目录下获取gorgeous.min.js。
  2. 建立GorgeousStart目录，结构如下：
     
     ```
@@ -112,7 +112,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 
 ## 创建g.ImageData对象 ##
 
-在上面的代码中，我们使用图片源地址来初始化g.ImageData对象。在Gorgeous中，一共有六种方式可以创建g.ImageData对象：
+在上面的代码中，我们使用图片源地址来初始化g.ImageData对象。实际上在Gorgeous里，一共有六种方式可以创建g.ImageData对象：
 
  1. 使用图片源地址
     g.ImageData({string}, {function ({g.ImageData})})
