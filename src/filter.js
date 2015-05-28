@@ -50,7 +50,7 @@
 	g.kernels = {};
 
 	function preprocessFilterName(name) {
-		return name.trim().replace(/\s+/g, ' ');
+		return name.trim().replace(/\s+/g, ' ').toLowerCase();
 	}
 
 	g.register = function (name, kernel, factor, bias) {

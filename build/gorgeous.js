@@ -240,7 +240,7 @@ var gorgeous = {};
 		this.__synchronized = true;
 		return this;
 	};
-	
+
 	function commonOperationForGet(self, ops, hsi) {
 		if (hsi && !self.__synchronized) {
 			self.updateHSI();
@@ -260,25 +260,25 @@ var gorgeous = {};
 
 	g.ImageData.prototype.getR = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i+1] = data[i+2] = 0;
+			data[i + 1] = data[i + 2] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getG = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i] = data[i+2] = 0;
+			data[i] = data[i + 2] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getB = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i] = data[i+1] = 0;
+			data[i] = data[i + 1] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getH = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i];
 		}, true);
 		this.__synchronized = true;
 		return imd;
@@ -286,7 +286,7 @@ var gorgeous = {};
 
 	g.ImageData.prototype.getS = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i+1];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i + 1];
 		}, true);
 		this.__synchronized = true;
 		return imd;
@@ -294,16 +294,16 @@ var gorgeous = {};
 
 	g.ImageData.prototype.getI = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i+2];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i + 2];
 		}, true);
 		this.__synchronized = true;
 		return imd;
 	};
-	
+
 	g.ImageData.prototype.getHSI = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
 			for (var j = 0; j < 4; j++) {
-				data[i+j] = hsiData[i+j];
+				data[i + j] = hsiData[i + j];
 			}
 		}, true);
 		this.__synchronized = true;
@@ -459,12 +459,12 @@ var gorgeous = {};
 		this.pushChange();
 		return this;
 	};
-	
+
 	g.ImageData.prototype.threshold = function () {
 		var data = this.data;
 		var th = 0;
 		for (var i = 0; i < data.length; i += 4) {
-			if(!(data[i] === data[i + 1] && data[i + 1] === data[i + 2])) {
+			if (!(data[i] === data[i + 1] && data[i + 1] === data[i + 2])) {
 				data[i] = data[i + 1] = data[i + 2] = g.intensity(data[i], data[i + 1], data[i + 2]);
 			}
 			th += data[i];
@@ -480,7 +480,7 @@ var gorgeous = {};
 		this.pushChange();
 		return this;
 	};
-	
+
 	function execute(obj, process) {
 		for (var i = 0; i < obj.data.length; i += 4) {
 			for (var j = 0; j < 3; j++) {
@@ -506,7 +506,7 @@ var gorgeous = {};
 			arr[i] = Math.log(arr[i] + 1) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.exp = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('exp() need argument n greater than 1 & less than 5.');
@@ -517,7 +517,7 @@ var gorgeous = {};
 			arr[i] = (Math.pow(n, arr[i]) - 1) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.root = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('root() need argument n greater than 1 & less than 5.');
@@ -528,7 +528,7 @@ var gorgeous = {};
 			arr[i] = Math.pow(arr[i], m) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.pow = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('pow() need argument n greater than 1 & less than 5.');
@@ -538,7 +538,7 @@ var gorgeous = {};
 			arr[i] = Math.pow(arr[i], n) * c;
 		});
 	};
-	
+
 } (gorgeous));;
 (function (g) {
 
@@ -561,7 +561,7 @@ var gorgeous = {};
 		this.__synchronized = true;
 		return histogramDistribution;
 	};
-	
+
 	g.ImageData.prototype.equalize = function () {
 		var ndis = new Uint8ClampedArray(256);
 		var odis = this.histogram();
@@ -632,7 +632,7 @@ var gorgeous = {};
 	g.kernels = {};
 
 	function preprocessFilterName(name) {
-		return name.trim().replace(/\s+/g, ' ');
+		return name.trim().replace(/\s+/g, ' ').toLowerCase();
 	}
 
 	g.register = function (name, kernel, factor, bias) {
@@ -670,7 +670,7 @@ var gorgeous = {};
 		if (kernel instanceof Function) {
 			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
 			this.pushChange();
-		} else if (kernel instanceof Array && typeof kernel[0] === 'number'){
+		} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
 			g.convolution(this.data, this.width, this.height, kernel);
 			this.pushChange();
 		} else if (this[name] instanceof Function) {
