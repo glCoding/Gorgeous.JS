@@ -49,7 +49,7 @@
 
 	g.kernels = {};
 
-	g.registerFilter = function (name, kernel, factor, bias) {
+	g.register = function (name, kernel, factor, bias) {
 		if (typeof kernel === 'string') {
 			if (!g.kernels[kernel]) {
 				throw new Error('no ' + kernel + ' in g.kernels.');
@@ -63,7 +63,7 @@
 		return g;
 	};
 
-	g.ImageData.prototype.useFilter = function (name) {
+	g.ImageData.prototype.use = function (name) {
 		var kernel = g.kernels[name];
 		if (kernel instanceof Function) {
 			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
