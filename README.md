@@ -5,7 +5,7 @@ Gorgeous.JS是一个基于Canvas的图像处理库，它可以直接在浏览器
 ## 已有特性 ##
 
  * 滤镜效果：支持多种平滑、锐化、边缘检测等基础操作，内置多种常用滤镜；
- * 图像存储：支持直接使用Canvas进行绘制，也可输出为HTML的<img>方便用户保存；
+ * 图像存储：支持直接使用Canvas进行绘制，也可输出为HTML的 &lt;img&gt; 方便用户保存；
  * 方便扩展：所有的处理操作都可以注册别名，支持中文命名，而且可以方便地添加自定义滤镜；
 
 ## 计划中特性 ##
@@ -18,7 +18,7 @@ Gorgeous.JS是一个基于Canvas的图像处理库，它可以直接在浏览器
 
 ```
 //注册自定义效果“灰色浮雕”为组合使用“Emboss”和“gray”两种效果
-g.register('灰色浮雕', ['emboss'], ['gray']);
+g.register('灰色浮雕', ['Emboss'], ['gray']);
 
 //加载图片并进行处理
 g.loadImage('img/baboon.png', function (oimg) {
@@ -37,5 +37,5 @@ g.loadImage('img/baboon.png', function (oimg) {
 ![处理后的图像][2]
 
 
-  [1]: test/img/baboon.png
-  [2]: test/img/baboon-emboss.png
+  [1]: /img/bVlVFz
+  [2]: /img/bVlVFA
