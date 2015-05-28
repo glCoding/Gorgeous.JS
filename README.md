@@ -37,5 +37,5 @@ g.loadImage('img/baboon.png', function (oimg) {
 ![处理后的图像][2]
 
 
-  [1]: /img/bVlVFz
-  [2]: /img/bVlVFA
+  [1]: http://foolyou.github.io/Gorgeous.JS/images/README/o.png
+  [2]: http://foolyou.github.io/Gorgeous.JS/images/README/r.png
