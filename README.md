@@ -32,9 +32,7 @@ g.loadImage('img/baboon.png', function (oimg) {
 ```
 效果如下：
 
-![原始图像][1]
-
-![处理后的图像][2]
+![原始图像][1] ![处理后的图像][2]
 
 
   [1]: http://foolyou.github.io/Gorgeous.JS/images/README/o.png
