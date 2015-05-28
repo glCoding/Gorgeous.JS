@@ -49,7 +49,7 @@ g.loadImage(src, function (img) {
 				1, 1, 1,
 				1, 1, 1
 			].map(function (v) { return v / 9; });
-			g.registerFilter('平均值', k);
+			g.register('平均值', k);
 			test.pass(g.kernels['平均值'].every(function (v) {
 				return v === 1 / 9;
 			}));

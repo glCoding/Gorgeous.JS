@@ -631,7 +631,7 @@ var gorgeous = {};
 
 	g.kernels = {};
 
-	g.registerFilter = function (name, kernel, factor, bias) {
+	g.register = function (name, kernel, factor, bias) {
 		if (typeof kernel === 'string') {
 			if (!g.kernels[kernel]) {
 				throw new Error('no ' + kernel + ' in g.kernels.');
@@ -645,7 +645,7 @@ var gorgeous = {};
 		return g;
 	};
 
-	g.ImageData.prototype.useFilter = function (name) {
+	g.ImageData.prototype.use = function (name) {
 		var kernel = g.kernels[name];
 		if (kernel instanceof Function) {
 			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -659,7 +659,7 @@ var gorgeous = {};
 } (gorgeous));;
 (function (g) {
 
-	g.registerFilter('Blur', [
+	g.register('Blur', [
 		0, 0, 1, 0, 0,
 		0, 1, 1, 1, 0,
 		1, 1, 1, 1, 1,
@@ -667,7 +667,7 @@ var gorgeous = {};
 		0, 0, 1, 0, 0,
 	], 1 / 13);
 
-	g.registerFilter('Gaussian Blur', [
+	g.register('Gaussian Blur', [
 		1, 4, 6, 4, 1,
 		4, 16, 24, 16, 4,
 		6, 24, 36, 24, 6,
@@ -675,13 +675,13 @@ var gorgeous = {};
 		1, 4, 6, 4, 1,
 	], 1 / 256);
 
-	g.registerFilter('Mean', [
+	g.register('Mean', [
 		1, 1, 1,
 		1, 1, 1,
 		1, 1, 1
 	]);
 
-	g.registerFilter('Middle', function (width, height) {
+	g.register('Middle', function (width, height) {
 		function comp(a, b) {
 			return a - b;
 		}
@@ -728,7 +728,7 @@ var gorgeous = {};
 		}
 	});
 
-	g.registerFilter('Mosaic', function (width, height) {
+	g.register('Mosaic', function (width, height) {
 		width = width || 6;
 		height = height || 6;
 		var centery = Math.round(height / 2) - 1;
@@ -757,19 +757,19 @@ var gorgeous = {};
 } (gorgeous));;
 (function (g) {
 
-	g.registerFilter('Sharpen', [
+	g.register('Sharpen', [
 		-1, -1, -1,
 		-1, 9, -1,
 		-1, -1, -1
 	]);
 
-	g.registerFilter('Excessive Sharpen', [
+	g.register('Excessive Sharpen', [
 		1, 1, 1,
 		1, -7, 1,
 		1, 1, 1
 	]);
 
-	g.registerFilter('Emboss', [
+	g.register('Emboss', [
 		-1, -1, 0,
 		-1, 0, 1,
 		0, 1, 1

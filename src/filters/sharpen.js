@@ -1,18 +1,18 @@
 (function (g) {
 
-	g.registerFilter('Sharpen', [
+	g.register('Sharpen', [
 		-1, -1, -1,
 		-1, 9, -1,
 		-1, -1, -1
 	]);
 
-	g.registerFilter('Excessive Sharpen', [
+	g.register('Excessive Sharpen', [
 		1, 1, 1,
 		1, -7, 1,
 		1, 1, 1
 	]);
 
-	g.registerFilter('Emboss', [
+	g.register('Emboss', [
 		-1, -1, 0,
 		-1, 0, 1,
 		0, 1, 1

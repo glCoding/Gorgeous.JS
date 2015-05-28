@@ -15,7 +15,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Blur';
-			imd.useFilter(filter).getImage(function (img) {
+			imd.use(filter).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});
@@ -28,7 +28,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Gaussian Blur';
-			imd.useFilter(filter).getImage(function (img) {
+			imd.use(filter).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});
@@ -41,7 +41,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Middle';
-			imd.useFilter(filter, 5, 2).getImage(function (img) {
+			imd.use(filter, 5, 2).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});
@@ -54,7 +54,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Mosaic';
-			imd.useFilter(filter).getImage(function (img) {
+			imd.use(filter).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});

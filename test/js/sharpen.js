@@ -15,7 +15,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Sharpen';
-			imd.useFilter(filter).getImage(function (img) {
+			imd.use(filter).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});
@@ -28,7 +28,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Excessive Sharpen';
-			imd.useFilter(filter).getImage(function (img) {
+			imd.use(filter).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});
@@ -41,7 +41,7 @@ g.loadImage(src, function (img) {
 			});
 			console.time('use kernel');
 			var filter = 'Emboss';
-			imd.useFilter(filter).gray().getImage(function (img) {
+			imd.use(filter).gray().getImage(function (img) {
 				test.show(filter + ' & Gray', img);
 				test.pass(img instanceof Image);
 			});

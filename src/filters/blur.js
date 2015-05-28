@@ -1,6 +1,6 @@
 (function (g) {
 
-	g.registerFilter('Blur', [
+	g.register('Blur', [
 		0, 0, 1, 0, 0,
 		0, 1, 1, 1, 0,
 		1, 1, 1, 1, 1,
@@ -8,7 +8,7 @@
 		0, 0, 1, 0, 0,
 	], 1 / 13);
 
-	g.registerFilter('Gaussian Blur', [
+	g.register('Gaussian Blur', [
 		1, 4, 6, 4, 1,
 		4, 16, 24, 16, 4,
 		6, 24, 36, 24, 6,
@@ -16,13 +16,13 @@
 		1, 4, 6, 4, 1,
 	], 1 / 256);
 
-	g.registerFilter('Mean', [
+	g.register('Mean', [
 		1, 1, 1,
 		1, 1, 1,
 		1, 1, 1
 	]);
 
-	g.registerFilter('Middle', function (width, height) {
+	g.register('Middle', function (width, height) {
 		function comp(a, b) {
 			return a - b;
 		}
@@ -69,7 +69,7 @@
 		}
 	});
 
-	g.registerFilter('Mosaic', function (width, height) {
+	g.register('Mosaic', function (width, height) {
 		width = width || 6;
 		height = height || 6;
 		var centery = Math.round(height / 2) - 1;
