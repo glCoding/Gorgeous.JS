@@ -581,7 +581,7 @@ var gorgeous = {};
 
 } (gorgeous));;
 (function (g) {
-
+	'use strict';
 	g.makeKernel = function (array, factor, bias) {
 		if (!array) {
 			return null;
@@ -631,14 +631,33 @@ var gorgeous = {};
 
 	g.kernels = {};
 
+	function preprocessFilterName(name) {
+		return name.trim().replace(/\s+/g, ' ');
+	}
+
 	g.register = function (name, kernel, factor, bias) {
+		name = preprocessFilterName(name);
 		if (typeof kernel === 'string') {
+			kernel = preprocessFilterName(kernel);
 			if (!g.kernels[kernel]) {
-				throw new Error('no ' + kernel + ' in g.kernels.');
+				if (!g.ImageData.prototypep[kernel]) {
+					throw new Error('no ' + kernel + ' in g.kernels.');
+				}
+				g.kernels[name] = function () {
+					g.ImageData.prototype[kernel].apply(this, Array.prototype.slice.call(this, 2));
+				};
 			}
 			g.kernels[name] = g.kernels[kernel];
 		} else if (kernel instanceof Function) {
 			g.kernels[name] = kernel;
+		} else if (kernel instanceof Array && typeof kernel[0] === 'string') {
+			g.kernels[name] = (function (ks) {
+				return function () {
+					for (var i = 0; i < ks.length; i++) {
+						this.use.apply(this, ks[i]);
+					}
+				};
+			} (Array.prototype.slice.call(arguments, 1)));
 		} else {
 			g.kernels[name] = g.makeKernel(kernel, factor, bias);
 		}
@@ -646,13 +665,19 @@ var gorgeous = {};
 	};
 
 	g.ImageData.prototype.use = function (name) {
+		name = preprocessFilterName(name);
 		var kernel = g.kernels[name];
 		if (kernel instanceof Function) {
 			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
-		} else {
+			this.pushChange();
+		} else if (kernel instanceof Array && typeof kernel[0] === 'number'){
 			g.convolution(this.data, this.width, this.height, kernel);
+			this.pushChange();
+		} else if (this[name] instanceof Function) {
+			this[name].apply(this, Array.prototype.slice.call(arguments, 1));
+		} else {
+			throw new Error('no such filter.');
 		}
-		this.pushChange();
 		return this;
 	};
 

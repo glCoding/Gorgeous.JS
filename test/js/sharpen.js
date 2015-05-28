@@ -40,8 +40,9 @@ g.loadImage(src, function (img) {
 				test.show('Original Image', img);
 			});
 			console.time('use kernel');
-			var filter = 'Emboss';
-			imd.use(filter).gray().getImage(function (img) {
+			g.register('Gray Emboss', ['Emboss'], ['gray']);
+			var filter = 'Gray Emboss';
+			imd.use(filter).getImage(function (img) {
 				test.show(filter + ' & Gray', img);
 				test.pass(img instanceof Image);
 			});
