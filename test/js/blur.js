@@ -3,7 +3,7 @@ var g = gorgeous;
 
 var src = 'img/horsesnoise.png';
 var tip = document.createElement('h3');
-tip.innerHTML = 'Loading baboon image, please wait...';
+tip.innerHTML = 'Loading horsenoise image, please wait...';
 document.body.appendChild(tip);
 g.loadImage(src, function (img) {
 	tip.innerHTML = 'Baboon image loaded.';
