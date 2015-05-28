@@ -1,20 +1,21 @@
 (function (g) {
 
-	g.makeKernel = function (array) {
+	g.makeKernel = function (array, factor, bias) {
 		if (!array) {
 			return null;
 		}
-		var o = array.slice();
-		if (!o.n) {
-			o.n = Math.floor(Math.sqrt(o.length));
-			o.mid = Math.round(o.n / 2) - 1;
-			if (o.n * o.n !== o.length) {
-				throw new Error('kernel size mismatch.');
-			}
-			o.get = function (x, y) {
-				return o[y * o.n + x];
-			};
+		var o = array.slice().map(function (v) {
+			return v * (factor || 1);
+		});
+		o.n = Math.floor(Math.sqrt(o.length));
+		o.mid = Math.round(o.n / 2) - 1;
+		if (o.n * o.n !== o.length) {
+			throw new Error('kernel size mismatch.');
 		}
+		o.bias = bias || 0;
+		o.get = function (x, y) {
+			return o[y * o.n + x];
+		};
 		return o;
 	};
 
@@ -39,7 +40,7 @@
 				}
 				var cur = 4 * (width * y + x);
 				for (var i = 0; i < 3; i++) {
-					oMatrix[cur + i] = sum[i];
+					oMatrix[cur + i] = sum[i] + kernel.bias;
 				}
 			}
 		}
@@ -48,7 +49,7 @@
 
 	g.kernels = {};
 
-	g.registerFilter = function (name, kernel) {
+	g.registerFilter = function (name, kernel, factor, bias) {
 		if (typeof kernel === 'string') {
 			if (!g.kernels[kernel]) {
 				throw new Error('no ' + kernel + ' in g.kernels.');
@@ -57,7 +58,7 @@
 		} else if (kernel instanceof Function) {
 			g.kernels[name] = kernel;
 		} else {
-			g.kernels[name] = g.makeKernel(kernel);
+			g.kernels[name] = g.makeKernel(kernel, factor, bias);
 		}
 		return g;
 	};

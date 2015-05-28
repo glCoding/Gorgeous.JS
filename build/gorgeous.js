@@ -582,21 +582,22 @@ var gorgeous = {};
 } (gorgeous));;
 (function (g) {
 
-	g.makeKernel = function (array) {
+	g.makeKernel = function (array, factor, bias) {
 		if (!array) {
 			return null;
 		}
-		var o = array.slice();
-		if (!o.n) {
-			o.n = Math.floor(Math.sqrt(o.length));
-			o.mid = Math.round(o.n / 2) - 1;
-			if (o.n * o.n !== o.length) {
-				throw new Error('kernel size mismatch.');
-			}
-			o.get = function (x, y) {
-				return o[y * o.n + x];
-			};
+		var o = array.slice().map(function (v) {
+			return v * (factor || 1);
+		});
+		o.n = Math.floor(Math.sqrt(o.length));
+		o.mid = Math.round(o.n / 2) - 1;
+		if (o.n * o.n !== o.length) {
+			throw new Error('kernel size mismatch.');
 		}
+		o.bias = bias || 0;
+		o.get = function (x, y) {
+			return o[y * o.n + x];
+		};
 		return o;
 	};
 
@@ -621,7 +622,7 @@ var gorgeous = {};
 				}
 				var cur = 4 * (width * y + x);
 				for (var i = 0; i < 3; i++) {
-					oMatrix[cur + i] = sum[i];
+					oMatrix[cur + i] = sum[i] + kernel.bias;
 				}
 			}
 		}
@@ -630,7 +631,7 @@ var gorgeous = {};
 
 	g.kernels = {};
 
-	g.registerFilter = function (name, kernel) {
+	g.registerFilter = function (name, kernel, factor, bias) {
 		if (typeof kernel === 'string') {
 			if (!g.kernels[kernel]) {
 				throw new Error('no ' + kernel + ' in g.kernels.');
@@ -639,7 +640,7 @@ var gorgeous = {};
 		} else if (kernel instanceof Function) {
 			g.kernels[name] = kernel;
 		} else {
-			g.kernels[name] = g.makeKernel(kernel);
+			g.kernels[name] = g.makeKernel(kernel, factor, bias);
 		}
 		return g;
 	};
@@ -664,7 +665,7 @@ var gorgeous = {};
 		1, 1, 1, 1, 1,
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
-	].map(function (v) { return v / 13; }));
+	], 1 / 13);
 
 	g.registerFilter('Gaussian Blur', [
 		1, 4, 6, 4, 1,
@@ -672,14 +673,69 @@ var gorgeous = {};
 		6, 24, 36, 24, 6,
 		4, 16, 24, 16, 4,
 		1, 4, 6, 4, 1,
-	].map(function (v) { return v / 256; }));
+	], 1 / 256);
+
+	g.registerFilter('Mean', [
+		1, 1, 1,
+		1, 1, 1,
+		1, 1, 1
+	]);
+
+	g.registerFilter('Middle', function (width, height) {
+		function comp(a, b) {
+			return a - b;
+		}
+		width = width || 3;
+		height = height || 3;
+		var matrix = new Uint8ClampedArray(this.data);
+		var mid = [];
+		var length = width * height;
+		var centery = Math.round(height / 2) - 1;
+		var centerx = Math.round(width / 2) - 1;
+		if (length % 2 === 0) {
+			mid.push(length / 2 - 1);
+			mid.push(length / 2);
+		} else {
+			mid.push((length - 1) / 2);
+		}
+		for (var y = 0; y < this.height; y++) {
+			for (var x = 0; x < this.width; x++) {
+				var cur = 4 * (this.width * y + x);
+				var pixels = [[], [], []];
+				for (var j = 0; j < length; j++) {
+					var yy = Math.floor(j / width) - centery + y;
+					var xx = j % width - centerx + x;
+					if (!(xx < 0 || yy < 0 || xx >= this.width || yy >= this.height)) {
+						var cc = 4 * (this.width * yy + xx);
+						for (var i = 0; i < 3; i++) {
+							pixels[i].push(matrix[cc + i]);
+						}
+					} else {
+						for (var i = 0; i < 3; i++) {
+							pixels[i].push(0);
+						}
+					}
+				}
+				for (var i = 0; i < 3; i++) {
+					pixels[i].sort(comp);
+					var sum = 0;
+					for (var j = 0; j < mid.length; j++) {
+						sum += pixels[i][mid[j]];
+					}
+					this.data[cur + i] = sum / mid.length;
+				}
+			}
+		}
+	});
 
 	g.registerFilter('Mosaic', function (width, height) {
-		width = width || 10;
-		height = height || 10;
+		width = width || 6;
+		height = height || 6;
+		var centery = Math.round(height / 2) - 1;
+		var centerx = Math.round(width / 2) - 1;
 		for (var y = 0; y < this.height; y += height) {
 			for (var x = 0; x < this.width; x += width) {
-				var index = 4 * (y * this.width + x);
+				var index = 4 * ((y + centery) * this.width + (x + centerx));
 				var vertex = [];
 				for (var i = 0; i < 3; i++) {
 					vertex.push(this.data[index + i]);
@@ -706,5 +762,17 @@ var gorgeous = {};
 		-1, 9, -1,
 		-1, -1, -1
 	]);
+
+	g.registerFilter('Excessive Sharpen', [
+		1, 1, 1,
+		1, -7, 1,
+		1, 1, 1
+	]);
+
+	g.registerFilter('Emboss', [
+		-1, -1, 0,
+		-1, 0, 1,
+		0, 1, 1
+	], 1, 128);
 
 } (gorgeous));

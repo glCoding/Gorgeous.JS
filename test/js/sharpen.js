@@ -20,6 +20,32 @@ g.loadImage(src, function (img) {
 				test.pass(img instanceof Image);
 			});
 			console.timeEnd('use kernel');
+		}],
+		['Excessive Sharpen', function (test) {
+			var imd = new g.ImageData(img);
+			imd.getImage(function (img) {
+				test.show('Original Image', img);
+			});
+			console.time('use kernel');
+			var filter = 'Excessive Sharpen';
+			imd.useFilter(filter).getImage(function (img) {
+				test.show(filter, img);
+				test.pass(img instanceof Image);
+			});
+			console.timeEnd('use kernel');
+		}],
+		['Emboss & Gray', function (test) {
+			var imd = new g.ImageData(img);
+			imd.getImage(function (img) {
+				test.show('Original Image', img);
+			});
+			console.time('use kernel');
+			var filter = 'Emboss';
+			imd.useFilter(filter).gray().getImage(function (img) {
+				test.show(filter + ' & Gray', img);
+				test.pass(img instanceof Image);
+			});
+			console.timeEnd('use kernel');
 		}]
 		);
 });
