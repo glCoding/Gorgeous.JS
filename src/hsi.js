@@ -36,7 +36,7 @@
 		this.__synchronized = true;
 		return this;
 	};
-	
+
 	function commonOperationForGet(self, ops, hsi) {
 		if (hsi && !self.__synchronized) {
 			self.updateHSI();
@@ -56,25 +56,25 @@
 
 	g.ImageData.prototype.getR = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i+1] = data[i+2] = 0;
+			data[i + 1] = data[i + 2] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getG = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i] = data[i+2] = 0;
+			data[i] = data[i + 2] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getB = function () {
 		return commonOperationForGet(this, function (i, data) {
-			data[i] = data[i+1] = 0;
+			data[i] = data[i + 1] = 0;
 		}, false);
 	};
 
 	g.ImageData.prototype.getH = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i];
 		}, true);
 		this.__synchronized = true;
 		return imd;
@@ -82,7 +82,7 @@
 
 	g.ImageData.prototype.getS = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i+1];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i + 1];
 		}, true);
 		this.__synchronized = true;
 		return imd;
@@ -90,16 +90,16 @@
 
 	g.ImageData.prototype.getI = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
-			data[i] = data[i+1] = data[i+2] = hsiData[i+2];
+			data[i] = data[i + 1] = data[i + 2] = hsiData[i + 2];
 		}, true);
 		this.__synchronized = true;
 		return imd;
 	};
-	
+
 	g.ImageData.prototype.getHSI = function () {
 		var imd = commonOperationForGet(this, function (i, data, hsiData) {
 			for (var j = 0; j < 4; j++) {
-				data[i+j] = hsiData[i+j];
+				data[i + j] = hsiData[i + j];
 			}
 		}, true);
 		this.__synchronized = true;

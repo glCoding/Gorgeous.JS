@@ -7,12 +7,12 @@
 		this.pushChange();
 		return this;
 	};
-	
+
 	g.ImageData.prototype.threshold = function () {
 		var data = this.data;
 		var th = 0;
 		for (var i = 0; i < data.length; i += 4) {
-			if(!(data[i] === data[i + 1] && data[i + 1] === data[i + 2])) {
+			if (!(data[i] === data[i + 1] && data[i + 1] === data[i + 2])) {
 				data[i] = data[i + 1] = data[i + 2] = g.intensity(data[i], data[i + 1], data[i + 2]);
 			}
 			th += data[i];
@@ -28,7 +28,7 @@
 		this.pushChange();
 		return this;
 	};
-	
+
 	function execute(obj, process) {
 		for (var i = 0; i < obj.data.length; i += 4) {
 			for (var j = 0; j < 3; j++) {
@@ -54,7 +54,7 @@
 			arr[i] = Math.log(arr[i] + 1) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.exp = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('exp() need argument n greater than 1 & less than 5.');
@@ -65,7 +65,7 @@
 			arr[i] = (Math.pow(n, arr[i]) - 1) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.root = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('root() need argument n greater than 1 & less than 5.');
@@ -76,7 +76,7 @@
 			arr[i] = Math.pow(arr[i], m) * c;
 		});
 	};
-	
+
 	g.ImageData.prototype.pow = function (n) {
 		if (n < 1 || n > 5) {
 			throw new Error('pow() need argument n greater than 1 & less than 5.');
@@ -86,5 +86,5 @@
 			arr[i] = Math.pow(arr[i], n) * c;
 		});
 	};
-	
+
 } (gorgeous));

@@ -88,7 +88,7 @@
 		if (kernel instanceof Function) {
 			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
 			this.pushChange();
-		} else if (kernel instanceof Array && typeof kernel[0] === 'number'){
+		} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
 			g.convolution(this.data, this.width, this.height, kernel);
 			this.pushChange();
 		} else if (this[name] instanceof Function) {

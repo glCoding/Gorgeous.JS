@@ -19,7 +19,7 @@
 		this.__synchronized = true;
 		return histogramDistribution;
 	};
-	
+
 	g.ImageData.prototype.equalize = function () {
 		var ndis = new Uint8ClampedArray(256);
 		var odis = this.histogram();
