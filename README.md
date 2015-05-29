@@ -115,6 +115,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 在上面的代码中，我们使用图片源地址来初始化g.ImageData对象。实际上在Gorgeous里，一共有六种方式可以创建g.ImageData对象：
 
  1. 使用图片源地址
+ 
     g.ImageData({string}, {function ({g.ImageData})})
     
     如上，向g.ImageData()传入两个参数，一个字符串src存储着图片源地址，以及一个回调函数callback，callback接受一个指向创建好的g.ImageData对象的参数imd。当图片加载成功，g.ImageData初始化完毕时，callback就会被调用。
@@ -127,6 +128,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
     ```
     
  2. 使用加载好的&lt;img&gt;
+ 
     g.ImageData({Image})
     
     向构造函数传入一个Image对象，函数将返回一个指向创建好的g.ImageData对象的引用。
@@ -148,6 +150,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
     ```
     
  3. 使用HTMLCanvasElement对象
+ 
     g.ImageData({HTMLCanvasElement})
     
     Gorgeous提供了g.makeCanvasContext(width, height)函数来创建Canvas，这个函数会返回一个CanvasRenderingContext2D对象ctx,你可以用ctx.canvas来获取HTMLCanvasElement。
@@ -160,12 +163,15 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
     //Do something with imd
     ```
  4. 使用CanvasRenderingContext2D对象
+ 
    g.ImageData({CanvasRenderingContext2D})
    
  5. 使用由Canvas获取的原生ImageData对象
+ 
    g.ImageData({ImageData})
    
  6. 使用已有的g.ImageData对象（相当于整体拷贝）
+ 
    g.ImageData({g.ImageData})
 
 以上方式都会返回一个创建好的g.ImageData对象，你可以自由选择是否使用new运算符。实际上使用new来创建新对象会减少一次函数调用，但是一般来说这并不会带来多少性能提升，所以不必在意。
@@ -176,6 +182,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 g.ImageData.prototype.use({string}, ...)
 
 use()方法接受一个字符串参数作为要使用的滤镜效果名称， 并将剩余参数传递给该滤镜。处理结束后该方法将返回原对象方便进行链式调用。
+滤镜名称将会被转为小写， 首尾空格都会被去掉， 同时字符间空格都会被缩减为一个， 例如'gaussian blur'与' Gaussian &nbsp;&nbsp;Blur '是等价的， 你可以放心使用。 
 
 例如， <code>imd.use('mosaic', 10, 10);</code>将调用'mosaic'滤镜， 为图像打上10x10的马赛克。 
 
@@ -183,3 +190,49 @@ use()方法接受一个字符串参数作为要使用的滤镜效果名称， �
 
 ## 注册新的滤镜效果 ##
 
+g.register()函数支持添加自定义滤镜效果、 为滤镜添加别名以及滤镜组合功能。
+
+ 1. 自定义滤镜
+    
+    1. 添加掩模
+      
+      g.register({string}, {Array}, {number}, {number})
+   
+      第一个参数是滤镜名称， 第二个参数是掩模矩阵（你需要将之向量化） ，第三个参数factor表示矩阵乘的因子， 第四个参数bias是对卷积结果的偏置。
+      
+      例如
+      
+      ```
+      g.register('平均值滤波', [
+        1, 1, 1,
+        1, 1, 1,
+        1, 1, 1
+      ], 1 / 9, 0);
+      ```
+      将建立一个均值滤波器。
+    
+    2. 添加处理函数
+       
+       g.register({string}, {function (...)})
+       
+       同样， 第一个参数是滤镜名称， 而第二个参数是一个用来处理图像的函数， 当使用imd.use()方法调用这个滤镜时， Gorgeous会以imd为this调用这个函数，
+       并把其他参数一并传给函数。具体的处理函数写法请参考开发者手册。
+    
+    3. 别名
+       
+       g.register({string}, {string})
+       
+       这会将第一个参数定义的滤镜绑定到以第二个参数为名的滤镜上。如<code>g.register('马赛克', 'mosaic')</code>将会使滤镜'马赛克'成为'mosaic'的别名。
+    
+    4. 滤镜组合
+    
+       g.register({string}, [{string}, ...], [{string}, ...], ...)
+       
+       即使现有的滤镜可以满足你的需求， 每次都要使用一串use()来调用它们仍显得很麻烦。 这时你就可以使用上面的形式来将一系列滤镜操作统一为一个滤镜。
+       例如：<code>g.register('灰色马赛克浮雕', ['gray'], ['mosaic', 8, 8], ['emboss'])</code>。
+       
+    Tips：
+       
+       1. 自定义滤镜时最好使用如下命名格式 '命名空间.滤镜名称'， 以防止意外覆盖Gorgeous自带滤镜。
+       
+       2. g.register()以及g.ImageData.prototype.use()未来会添加直接在字符串中提供参数的功能， 可能会用到$#^等特殊字符， 因此在滤镜命名时请不要使用这些符号。
