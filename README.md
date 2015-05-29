@@ -169,3 +169,17 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
    g.ImageData({g.ImageData})
 
 以上方式都会返回一个创建好的g.ImageData对象，你可以自由选择是否使用new运算符。实际上使用new来创建新对象会减少一次函数调用，但是一般来说这并不会带来多少性能提升，所以不必在意。
+
+## 使用滤镜效果 ##
+
+创建好g.ImageData对象之后，就可以使用use()方法对图像进行操作了。
+g.ImageData.prototype.use({string}, ...)
+
+use()方法接受一个字符串参数作为要使用的滤镜效果名称， 并将剩余参数传递给该滤镜。处理结束后该方法将返回原对象方便进行链式调用。
+
+例如， <code>imd.use('mosaic', 10, 10);</code>将调用'mosaic'滤镜， 为图像打上10x10的马赛克。 
+
+滤镜列表马上会更新上来。
+
+## 注册新的滤镜效果 ##
+
