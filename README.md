@@ -80,7 +80,7 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 		<h1>Gorgeous 开胃菜</h1>
 		<script src="lib/gorgeous.min.js"></script>
 		<script>
-                        //记得先将gorgeous命名空间简记为g，方便后续使用
+            //记得先将gorgeous命名空间简记为g，方便后续使用
 			var g = gorgeous;
 			var src = 'img/baboon.png';
 			
