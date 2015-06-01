@@ -243,10 +243,12 @@ Tips：
 
     名称    |   参数   |   效果
     ----   |-----    |----
-    blur   |  无      | 使图片模糊
-    Gaussian blur   |  无      | 高斯模糊（尚不完善）
-    Mean   | 无 | 均值滤波
-    Middle | width height | 根据参数指定掩模大小进行中值滤波（去噪）
+    blur   |  无      | 使图片模糊（尚不完善）
+    Gaussian blur   | radius, repeat | 使用box blur逼近高斯模糊,radius控制高斯分布的模糊半径（默认为5）； repeat值默认为5， 此值越大越接近高斯模糊效果。
+    Mean   | 无 | 均值滤波（尚不完善） 
+    Middle | width, height | 根据参数指定掩模大小进行中值滤波（去噪）（尚不完善）
+    Horizontal motion blur | radius | radius控制水平方向运动模糊程度， 默认为5
+    Vertical motion blur | radius | radius控制垂直方向运动模糊程度， 默认为5
 
  2. 锐化
 
@@ -259,5 +261,5 @@ Tips：
 
     名称    |   参数   |   效果
     ----   |-----    |----
-    mosaic   |  width height      | 马赛克效果， 参数用来控制马赛克格子大小
+    mosaic   |  width, height      | 马赛克效果， 参数用来控制马赛克格子大小
     emboss | 无 | 浮雕效果
