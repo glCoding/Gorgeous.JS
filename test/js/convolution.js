@@ -36,7 +36,7 @@ g.loadImage(src, function (img) {
 				1, 1, 1,
 				1, 1, 1,
 				1, 1, 1
-			].map(function (v) { return v / 9; }));
+			].map(function (v) { return v / 9; }), 3, 3);
 			g.convolution(matrix, width, height, kernel);
 			console.log(matrix);
 			test.pass(res.every(function (v, i) {
@@ -49,7 +49,7 @@ g.loadImage(src, function (img) {
 				1, 1, 1,
 				1, 1, 1
 			].map(function (v) { return v / 9; });
-			g.register('平均值', k);
+			g.register('平均值', k, 3, 3);
 			test.pass(g.kernels['平均值'].every(function (v) {
 				return v === 1 / 9;
 			}));

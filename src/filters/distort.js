@@ -4,7 +4,7 @@
 		-1, -1, 0,
 		-1, 0, 1,
 		0, 1, 1
-	], 1, 128);
+	], 3, 3, 1, 128);
 
 	g.register('Mosaic', function (width, height) {
 		width = width || 6;

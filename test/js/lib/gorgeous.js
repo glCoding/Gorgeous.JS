@@ -582,21 +582,23 @@ var gorgeous = {};
 } (gorgeous));;
 (function (g) {
 	'use strict';
-	g.makeKernel = function (array, factor, bias) {
+	g.makeKernel = function (array, width, height, factor, bias) {
 		if (!array) {
 			return null;
 		}
 		var o = array.slice().map(function (v) {
 			return v * (factor || 1);
 		});
-		o.n = Math.floor(Math.sqrt(o.length));
-		o.mid = Math.round(o.n / 2) - 1;
-		if (o.n * o.n !== o.length) {
+		if (width * height !== o.length) {
 			throw new Error('kernel size mismatch.');
 		}
+		o.width = width;
+		o.height = height;
+		o.midx = Math.round(o.width / 2) - 1;
+		o.midy = Math.round(o.height / 2) - 1;
 		o.bias = bias || 0;
 		o.get = function (x, y) {
-			return o[y * o.n + x];
+			return o[y * o.width + x];
 		};
 		return o;
 	};
@@ -611,8 +613,8 @@ var gorgeous = {};
 				for (var j = 0; j < kernel.length; j++) {
 					//operation on kernel matrix
 					//get the offset
-					var yy = Math.floor(j / kernel.n) - kernel.mid + y;
-					var xx = j % kernel.n - kernel.mid + x;
+					var yy = Math.floor(j / kernel.width) - kernel.midy + y;
+					var xx = j % kernel.width - kernel.midx + x;
 					if (!(xx < 0 || yy < 0 || xx >= width || yy >= height)) {
 						var cc = 4 * (width * yy + xx);
 						for (var i = 0; i < 3; i++) {
@@ -635,7 +637,7 @@ var gorgeous = {};
 		return name.trim().replace(/\s+/g, ' ').toLowerCase();
 	}
 
-	g.register = function (name, kernel, factor, bias) {
+	g.register = function (name, kernel, width, height, factor, bias) {
 		name = preprocessFilterName(name);
 		if (typeof kernel === 'string') {
 			kernel = preprocessFilterName(kernel);
@@ -659,7 +661,7 @@ var gorgeous = {};
 				};
 			} (Array.prototype.slice.call(arguments, 1)));
 		} else {
-			g.kernels[name] = g.makeKernel(kernel, factor, bias);
+			g.kernels[name] = g.makeKernel(kernel, width, height,  factor, bias);
 		}
 		return g;
 	};
@@ -690,7 +692,7 @@ var gorgeous = {};
 		1, 1, 1, 1, 1,
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
-	], 1 / 13);
+	], 5, 5,  1 / 13);
 
 	g.register('Gaussian Blur', [
 		1, 4, 6, 4, 1,
@@ -698,13 +700,13 @@ var gorgeous = {};
 		6, 24, 36, 24, 6,
 		4, 16, 24, 16, 4,
 		1, 4, 6, 4, 1,
-	], 1 / 256);
+	], 5, 5, 1 / 256);
 
 	g.register('Mean', [
 		1, 1, 1,
 		1, 1, 1,
 		1, 1, 1
-	]);
+	], 3, 3);
 
 	g.register('Middle', function (width, height) {
 		function comp(a, b) {
@@ -760,13 +762,13 @@ var gorgeous = {};
 		-1, -1, -1,
 		-1, 9, -1,
 		-1, -1, -1
-	]);
+	], 3, 3);
 
 	g.register('Excessive Sharpen', [
 		1, 1, 1,
 		1, -7, 1,
 		1, 1, 1
-	]);
+	], 3, 3);
 
 } (gorgeous));;
 (function (g) {
@@ -775,7 +777,7 @@ var gorgeous = {};
 		-1, -1, 0,
 		-1, 0, 1,
 		0, 1, 1
-	], 1, 128);
+	], 3, 3, 1, 128);
 
 	g.register('Mosaic', function (width, height) {
 		width = width || 6;
