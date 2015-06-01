@@ -6,7 +6,7 @@ var tip = document.createElement('h3');
 tip.innerHTML = 'Loading horsenoise image, please wait...';
 document.body.appendChild(tip);
 g.loadImage(src, function (img) {
-	tip.innerHTML = 'Baboon image loaded.';
+	tip.innerHTML = 'Horsenoise image loaded.';
 	Test(
 		['Blur', function (test) {
 			var imd = new g.ImageData(img);
@@ -28,7 +28,7 @@ g.loadImage(src, function (img) {
 			});
 			var filter = 'Gaussian Blur';
 			console.time(filter);
-			imd.use(filter, 5, 3).getImage(function (img) {
+			imd.use(filter, 8, 4).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});

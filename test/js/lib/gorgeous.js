@@ -752,6 +752,7 @@ var gorgeous = {};
 	});
 
 	g.register('Gaussian Blur', function (radius, repeat) {
+		radius = radius || 5;
 		repeat = repeat || 3;
 		for (var i = 0; i < repeat; i++) {
 			this.use('Horizontal Motion Blur', radius);
