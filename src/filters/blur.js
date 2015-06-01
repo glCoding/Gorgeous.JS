@@ -1,4 +1,5 @@
 (function (g) {
+	'use strict';
 
 	g.register('Blur', [
 		0, 0, 1, 0, 0,
@@ -8,13 +9,69 @@
 		0, 0, 1, 0, 0,
 	], 5, 5,  1 / 13);
 
-	g.register('Gaussian Blur', [
-		1, 4, 6, 4, 1,
-		4, 16, 24, 16, 4,
-		6, 24, 36, 24, 6,
-		4, 16, 24, 16, 4,
-		1, 4, 6, 4, 1,
-	], 5, 5, 1 / 256);
+	g.register('Horizontal Motion Blur', function (radius) {
+		radius = radius || 5;
+		var width = this.width;
+		var height = this.height;
+		var odata = this.data;
+		var factor = 1 / (2 * radius + 1);
+		var data = new Uint8ClampedArray(odata);
+		for (var y = 0; y < height; y++) {
+			var sum = [0, 0, 0];
+			for (var s = -radius; s <= radius; s++) {
+				var index = 4 * (width * y + s);
+				for (var i = 0; i < 3; i++) {
+					sum[i] += data[index + i] || 0;
+				}
+			}
+			for (var x = 0; x < width; x++) {
+				var cur = 4 * (width * y + x);
+				for (var i = 0; i < 3; i++) {
+					odata[cur+i] = sum[i] * factor;
+					sum[i] -= data[cur + i - 4 * radius] || 0;
+					sum[i] += data[cur + i + 4 * radius] || 0;
+				}
+			}
+		}
+		this.pushChange();
+	});
+
+	g.register('Vertical Motion Blur', function (radius) {
+		radius = radius || 5;
+		var width = this.width;
+		var height = this.height;
+		var odata = this.data;
+		var factor = 1 / (2 * radius + 1);
+		var data = new Uint8ClampedArray(odata);
+		for (var x = 0; x < width; x++) {
+			var sum = [0, 0, 0];
+			for (var s = -radius; s <= radius; s++) {
+				var index = 4 * (width * s + x);
+				for (var i = 0; i < 3; i++) {
+					sum[i] += data[index + i] || 0;
+				}
+			}
+			for (var y = 0; y < height; y++) {
+				var cur = 4 * (width * y + x);
+				for (var i = 0; i < 3; i++) {
+					odata[cur+i] = sum[i] * factor;
+					var cc1 = 4 * (width * (y - radius) + x);
+					var cc2 = 4 * (width * (y + radius) + x);
+					sum[i] -= data[cc1 + i] || 0;
+					sum[i] += data[cc2 + i] || 0;
+				}
+			}
+		}
+		this.pushChange();
+	});
+
+	g.register('Gaussian Blur', function (radius, repeat) {
+		repeat = repeat || 3;
+		for (var i = 0; i < repeat; i++) {
+			this.use('Horizontal Motion Blur', radius);
+			this.use('Vertical Motion Blur', radius);
+		}
+	});
 
 	g.register('Mean', [
 		1, 1, 1,
