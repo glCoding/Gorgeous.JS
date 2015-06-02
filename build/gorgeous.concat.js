@@ -775,12 +775,9 @@ var gorgeous = {};
 		1, 1, 1
 	], 3, 3);
 
-	g.register('Middle', function (radius) {
+	g.register('Median', function (radius) {
 		function makeHistogram() {
-			var h = [new Array(256), new Array(256), new Array(256)];
-			for (var j = 0; j < 256; j++) {
-				h[0][j] = h[1][j] = h[2][j] = 0;
-			}
+			var h = [new Uint8ClampedArray(256), new Uint8ClampedArray(256), new Uint8ClampedArray(256)];
 			return h;
 		}
 		function sub(ha, hb) {
