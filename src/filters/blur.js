@@ -7,7 +7,7 @@
 		1, 1, 1, 1, 1,
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
-	], 5, 5,  1 / 13);
+	], 5, 5, 1 / 13);
 
 	g.register('Horizontal Motion Blur', function (radius) {
 		radius = radius || 5;
@@ -19,17 +19,19 @@
 		for (var y = 0; y < height; y++) {
 			var sum = [0, 0, 0];
 			for (var s = -radius; s <= radius; s++) {
-				var index = 4 * (width * y + s);
+				var index = g.edge(s, y, width, height);
 				for (var i = 0; i < 3; i++) {
-					sum[i] += data[index + i] || 0;
+					sum[i] += data[index + i];
 				}
 			}
 			for (var x = 0; x < width; x++) {
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
+				var cc1 = g.edge(x - radius, y, width, height);
+				var cc2 = g.edge(x + radius, y, width, height);
 				for (var i = 0; i < 3; i++) {
-					odata[cur+i] = sum[i] * factor;
-					sum[i] -= data[cur + i - 4 * radius] || 0;
-					sum[i] += data[cur + i + 4 * radius] || 0;
+					odata[cur + i] = sum[i] * factor;
+					sum[i] -= data[cc1 + i];
+					sum[i] += data[cc2 + i];
 				}
 			}
 		}
@@ -46,19 +48,19 @@
 		for (var x = 0; x < width; x++) {
 			var sum = [0, 0, 0];
 			for (var s = -radius; s <= radius; s++) {
-				var index = 4 * (width * s + x);
+				var index = g.edge(x, s, width, height);
 				for (var i = 0; i < 3; i++) {
-					sum[i] += data[index + i] || 0;
+					sum[i] += data[index + i];
 				}
 			}
 			for (var y = 0; y < height; y++) {
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
+				var cc1 = g.edge(x, y - radius, width, height);
+				var cc2 = g.edge(x, y + radius, width, height);
 				for (var i = 0; i < 3; i++) {
-					odata[cur+i] = sum[i] * factor;
-					var cc1 = 4 * (width * (y - radius) + x);
-					var cc2 = 4 * (width * (y + radius) + x);
-					sum[i] -= data[cc1 + i] || 0;
-					sum[i] += data[cc2 + i] || 0;
+					odata[cur + i] = sum[i] * factor;
+					sum[i] -= data[cc1 + i];
+					sum[i] += data[cc2 + i];
 				}
 			}
 		}

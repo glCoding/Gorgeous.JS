@@ -28,7 +28,7 @@ g.loadImage(src, function (img) {
 			});
 			var filter = 'Gaussian Blur';
 			console.time(filter);
-			imd.use(filter, 8, 4).getImage(function (img) {
+			imd.use(filter, 6, 4).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});

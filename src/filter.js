@@ -1,5 +1,14 @@
 (function (g) {
 	'use strict';
+
+	g.edge = function (x, y, width, height) {
+		x = (x < 0) ? 0
+			: ((x >= width) ? (width - 1) : x);
+		y = (y < 0) ? 0
+			: ((y >= height) ? (height - 1) : y);
+		return 4 * (width * y + x);
+	};
+
 	g.makeKernel = function (array, width, height, factor, bias) {
 		if (!array) {
 			return null;
@@ -34,13 +43,13 @@
 					var yy = Math.floor(j / kernel.width) - kernel.midy + y;
 					var xx = j % kernel.width - kernel.midx + x;
 					if (!(xx < 0 || yy < 0 || xx >= width || yy >= height)) {
-						var cc = 4 * (width * yy + xx);
+						var cc = g.edge(xx, yy, width, height);
 						for (var i = 0; i < 3; i++) {
 							sum[i] += kernel[j] * matrix[cc + i];
 						}
 					}
 				}
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
 				for (var i = 0; i < 3; i++) {
 					oMatrix[cur + i] = sum[i] + kernel.bias;
 				}
@@ -79,7 +88,7 @@
 				};
 			} (Array.prototype.slice.call(arguments, 1)));
 		} else {
-			g.kernels[name] = g.makeKernel(kernel, width, height,  factor, bias);
+			g.kernels[name] = g.makeKernel(kernel, width, height, factor, bias);
 		}
 		return g;
 	};

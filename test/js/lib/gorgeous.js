@@ -582,6 +582,15 @@ var gorgeous = {};
 } (gorgeous));;
 (function (g) {
 	'use strict';
+
+	g.edge = function (x, y, width, height) {
+		x = (x < 0) ? 0
+			: ((x >= width) ? (width - 1) : x);
+		y = (y < 0) ? 0
+			: ((y >= height) ? (height - 1) : y);
+		return 4 * (width * y + x);
+	};
+
 	g.makeKernel = function (array, width, height, factor, bias) {
 		if (!array) {
 			return null;
@@ -616,13 +625,13 @@ var gorgeous = {};
 					var yy = Math.floor(j / kernel.width) - kernel.midy + y;
 					var xx = j % kernel.width - kernel.midx + x;
 					if (!(xx < 0 || yy < 0 || xx >= width || yy >= height)) {
-						var cc = 4 * (width * yy + xx);
+						var cc = g.edge(xx, yy, width, height);
 						for (var i = 0; i < 3; i++) {
 							sum[i] += kernel[j] * matrix[cc + i];
 						}
 					}
 				}
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
 				for (var i = 0; i < 3; i++) {
 					oMatrix[cur + i] = sum[i] + kernel.bias;
 				}
@@ -661,7 +670,7 @@ var gorgeous = {};
 				};
 			} (Array.prototype.slice.call(arguments, 1)));
 		} else {
-			g.kernels[name] = g.makeKernel(kernel, width, height,  factor, bias);
+			g.kernels[name] = g.makeKernel(kernel, width, height, factor, bias);
 		}
 		return g;
 	};
@@ -693,7 +702,7 @@ var gorgeous = {};
 		1, 1, 1, 1, 1,
 		0, 1, 1, 1, 0,
 		0, 0, 1, 0, 0,
-	], 5, 5,  1 / 13);
+	], 5, 5, 1 / 13);
 
 	g.register('Horizontal Motion Blur', function (radius) {
 		radius = radius || 5;
@@ -705,17 +714,19 @@ var gorgeous = {};
 		for (var y = 0; y < height; y++) {
 			var sum = [0, 0, 0];
 			for (var s = -radius; s <= radius; s++) {
-				var index = 4 * (width * y + s);
+				var index = g.edge(s, y, width, height);
 				for (var i = 0; i < 3; i++) {
-					sum[i] += data[index + i] || 0;
+					sum[i] += data[index + i];
 				}
 			}
 			for (var x = 0; x < width; x++) {
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
+				var cc1 = g.edge(x - radius, y, width, height);
+				var cc2 = g.edge(x + radius, y, width, height);
 				for (var i = 0; i < 3; i++) {
-					odata[cur+i] = sum[i] * factor;
-					sum[i] -= data[cur + i - 4 * radius] || 0;
-					sum[i] += data[cur + i + 4 * radius] || 0;
+					odata[cur + i] = sum[i] * factor;
+					sum[i] -= data[cc1 + i];
+					sum[i] += data[cc2 + i];
 				}
 			}
 		}
@@ -732,19 +743,19 @@ var gorgeous = {};
 		for (var x = 0; x < width; x++) {
 			var sum = [0, 0, 0];
 			for (var s = -radius; s <= radius; s++) {
-				var index = 4 * (width * s + x);
+				var index = g.edge(x, s, width, height);
 				for (var i = 0; i < 3; i++) {
-					sum[i] += data[index + i] || 0;
+					sum[i] += data[index + i];
 				}
 			}
 			for (var y = 0; y < height; y++) {
-				var cur = 4 * (width * y + x);
+				var cur = g.edge(x, y, width, height);
+				var cc1 = g.edge(x, y - radius, width, height);
+				var cc2 = g.edge(x, y + radius, width, height);
 				for (var i = 0; i < 3; i++) {
-					odata[cur+i] = sum[i] * factor;
-					var cc1 = 4 * (width * (y - radius) + x);
-					var cc2 = 4 * (width * (y + radius) + x);
-					sum[i] -= data[cc1 + i] || 0;
-					sum[i] += data[cc2 + i] || 0;
+					odata[cur + i] = sum[i] * factor;
+					sum[i] -= data[cc1 + i];
+					sum[i] += data[cc2 + i];
 				}
 			}
 		}
