@@ -35,12 +35,12 @@ g.loadImage(src, function (img) {
 			});
 			console.timeEnd(filter);
 		}],
-		['Middle', function (test) {
+		['Median', function (test) {
 			var imd = new g.ImageData(img);
 			imd.getImage(function (img) {
 				test.show('Original Image', img);
 			});
-			var filter = 'Middle';
+			var filter = 'Median';
 			console.time(filter);
 			imd.use(filter, 10).getImage(function (img) {
 				test.show(filter, img);

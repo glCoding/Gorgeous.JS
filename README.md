@@ -246,7 +246,7 @@ Tips：
     blur   |  无      | 使图片模糊（尚不完善）
     Gaussian blur   | radius, repeat | 使用box blur逼近高斯模糊,radius控制高斯分布的模糊半径（默认为5）； repeat值默认为5， 此值越大越接近高斯模糊效果。
     Mean   | 无 | 均值滤波（尚不完善） 
-    Middle | width, height | 根据参数指定掩模大小进行中值滤波（去噪）（尚不完善）
+    Median | width, height | 根据参数指定掩模大小进行中值滤波（去噪）（尚不完善）
     Horizontal motion blur | radius | radius控制水平方向运动模糊程度， 默认为5
     Vertical motion blur | radius | radius控制垂直方向运动模糊程度， 默认为5
 

@@ -80,7 +80,7 @@
 		1, 1, 1
 	], 3, 3);
 
-	g.register('Middle', function (radius) {
+	g.register('Median', function (radius) {
 		function makeHistogram() {
 			var h = [new Array(256), new Array(256), new Array(256)];
 			for (var j = 0; j < 256; j++) {
