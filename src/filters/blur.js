@@ -81,6 +81,7 @@
 	], 3, 3);
 
 	g.register('Median', function (radius) {
+		radius = radius || 2;
 		function makeHistogram() {
 			var h = [new Uint8ClampedArray(256), new Uint8ClampedArray(256), new Uint8ClampedArray(256)];
 			return h;

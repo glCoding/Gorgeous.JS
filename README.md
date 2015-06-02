@@ -53,8 +53,6 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 
 ##开胃菜##
 
-首先我们做一个小Demo，大致了解Gorgeous的使用方式：
-
  1. 在[这里][3]获取Gorgeous.JS，也可以在[Github Repo][4]获取完整的仓库，执行<code>npm run build</code>（需要node.js环境）之后在build目录下获取gorgeous.min.js。
  2. 建立GorgeousStart目录，结构如下：
     
@@ -182,9 +180,13 @@ Github地址：https://github.com/Foolyou/Gorgeous.JS
 g.ImageData.prototype.use({string}, ...)
 
 use()方法接受一个字符串参数作为要使用的滤镜效果名称， 并将剩余参数传递给该滤镜。处理结束后该方法将返回原对象方便进行链式调用。
+例如， <code>imd.use('mosaic', 10, 10);</code>将调用'mosaic'滤镜， 为图像打上10x10的马赛克。 
+
 滤镜名称将会被转为小写， 首尾空格都会被去掉， 同时字符间空格都会被缩减为一个， 例如'gaussian blur'与' Gaussian &nbsp;&nbsp;Blur '是等价的， 你可以放心使用。 
 
-例如， <code>imd.use('mosaic', 10, 10);</code>将调用'mosaic'滤镜， 为图像打上10x10的马赛克。 
+use()方法还可以接受一系列的数组， 数组中第一项是滤镜名称， 后面的项是相应的参数。 <code>imd.use(['gaussian blur', 5], ['gray'])</code>会先对图片进行高斯模糊， 
+然后对它进行灰度化。
+
 
 ## 注册新的滤镜效果 ##
 
@@ -246,7 +248,7 @@ Tips：
     blur   |  无      | 使图片模糊（尚不完善）
     Gaussian blur   | radius, repeat | 使用box blur逼近高斯模糊,radius控制高斯分布的模糊半径（默认为5）； repeat值默认为5， 此值越大越接近高斯模糊效果。
     Mean   | 无 | 均值滤波（尚不完善） 
-    Median | width, height | 根据参数指定掩模大小进行中值滤波（去噪）（尚不完善）
+    Median | radius | 根据参数指定掩模半径进行中值滤波（去噪）， radius默认为5
     Horizontal motion blur | radius | radius控制水平方向运动模糊程度， 默认为5
     Vertical motion blur | radius | radius控制垂直方向运动模糊程度， 默认为5
 

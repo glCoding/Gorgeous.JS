@@ -94,18 +94,24 @@
 	};
 
 	g.ImageData.prototype.use = function (name) {
-		name = preprocessFilterName(name);
-		var kernel = g.kernels[name];
-		if (kernel instanceof Function) {
-			kernel.apply(this, Array.prototype.slice.call(arguments, 1));
-			this.pushChange();
-		} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
-			g.convolution(this.data, this.width, this.height, kernel);
-			this.pushChange();
-		} else if (this[name] instanceof Function) {
-			this[name].apply(this, Array.prototype.slice.call(arguments, 1));
+		if (name instanceof Array && typeof name[0] === 'string') {
+			for (var i = 0; i < arguments.length; i++) {
+				this.use.apply(this, arguments[i]);
+			}
 		} else {
-			throw new Error('no such filter.');
+			name = preprocessFilterName(name);
+			var kernel = g.kernels[name];
+			if (kernel instanceof Function) {
+				kernel.apply(this, Array.prototype.slice.call(arguments, 1));
+				this.pushChange();
+			} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
+				g.convolution(this.data, this.width, this.height, kernel);
+				this.pushChange();
+			} else if (this[name] instanceof Function) {
+				this[name].apply(this, Array.prototype.slice.call(arguments, 1));
+			} else {
+				throw new Error('no such filter.');
+			}
 		}
 		return this;
 	};
