@@ -2,6 +2,7 @@
 var g = gorgeous;
 
 var src = 'img/horsesnoise.png';
+//var src = 'img/math.png';
 var tip = document.createElement('h3');
 tip.innerHTML = 'Loading horsenoise image, please wait...';
 document.body.appendChild(tip);
@@ -41,7 +42,7 @@ g.loadImage(src, function (img) {
 			});
 			var filter = 'Middle';
 			console.time(filter);
-			imd.use(filter, 5, 2).getImage(function (img) {
+			imd.use(filter, 10).getImage(function (img) {
 				test.show(filter, img);
 				test.pass(img instanceof Image);
 			});

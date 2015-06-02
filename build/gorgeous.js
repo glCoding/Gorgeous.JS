@@ -730,7 +730,6 @@ var gorgeous = {};
 				}
 			}
 		}
-		this.pushChange();
 	});
 
 	g.register('Vertical Motion Blur', function (radius) {
@@ -759,7 +758,6 @@ var gorgeous = {};
 				}
 			}
 		}
-		this.pushChange();
 	});
 
 	g.register('Gaussian Blur', function (radius, repeat) {
@@ -777,48 +775,92 @@ var gorgeous = {};
 		1, 1, 1
 	], 3, 3);
 
-	g.register('Middle', function (width, height) {
-		function comp(a, b) {
-			return a - b;
+	g.register('Middle', function (radius) {
+		function makeHistogram() {
+			var h = [new Array(256), new Array(256), new Array(256)];
+			for (var j = 0; j < 256; j++) {
+				h[0][j] = h[1][j] = h[2][j] = 0;
+			}
+			return h;
 		}
-		width = width || 3;
-		height = height || 3;
-		var matrix = new Uint8ClampedArray(this.data);
-		var mid = [];
-		var length = width * height;
-		var centery = Math.round(height / 2) - 1;
-		var centerx = Math.round(width / 2) - 1;
-		if (length % 2 === 0) {
-			mid.push(length / 2 - 1);
-			mid.push(length / 2);
-		} else {
-			mid.push((length - 1) / 2);
+		function sub(ha, hb) {
+			for (var i = 0; i < 3; i++) {
+				for (var j = 0; j < 256; j++) {
+					ha[i][j] -= hb[i][j];
+				}
+			}
 		}
-		for (var y = 0; y < this.height; y++) {
-			for (var x = 0; x < this.width; x++) {
-				var cur = 4 * (this.width * y + x);
-				var pixels = [[], [], []];
-				for (var j = 0; j < length; j++) {
-					var yy = Math.floor(j / width) - centery + y;
-					var xx = j % width - centerx + x;
-					if (!(xx < 0 || yy < 0 || xx >= this.width || yy >= this.height)) {
-						var cc = 4 * (this.width * yy + xx);
-						for (var i = 0; i < 3; i++) {
-							pixels[i].push(matrix[cc + i]);
-						}
-					} else {
-						for (var i = 0; i < 3; i++) {
-							pixels[i].push(0);
+		function add(ha, hb) {
+			for (var i = 0; i < 3; i++) {
+				for (var j = 0; j < 256; j++) {
+					ha[i][j] += hb[i][j];
+				}
+			}
+		}
+		function edge(x, width) {
+			return (x < 0) ? 0
+				: ((x >= width) ? (width - 1) : x);
+		}
+		var hs = [];
+		var width = this.width;
+		var height = this.height;
+		var len = 2 * radius + 1;
+		var half = Math.ceil((len * len) / 2);
+		var oData = this.data;
+		var data = new Uint8ClampedArray(oData);
+		//Initiate column histograms
+		for (var xx = 0; xx < width; xx++) {
+			hs[xx] = makeHistogram();
+			for (var yy = -radius; yy <= radius; yy++) {
+				var cur = g.edge(xx, yy, width, height);
+				for (var i = 0; i < 3; i++) {
+					hs[xx][i][data[cur + i]] += 1;
+				}
+			}
+		}
+		for (var y = 0; y < height; y++) {
+			//Initiate original mask histogram
+			var th = makeHistogram();
+			for (var xx = -radius; xx <= radius; xx++) {
+				add(th, hs[edge(xx, width)]);
+			}
+			var lt = [0, 0, 0];
+			var mid = [0, 0, 0];
+			//Find middle value
+			for (var i = 0; i < 3; i++) {
+				for (var n = 0; n < 256; n++) {
+					lt[i] += th[i][n];
+					if (lt[i] >= half) {
+						mid[i] = n;
+						break;
+					}
+				}
+			}
+			//window goes
+			for (var x = 0; x < width; x++) {
+				var cc = g.edge(x, y, width, height);
+				sub(th, hs[edge(x - radius, width)]);
+				add(th, hs[edge(x + radius + 1, width)]);
+				for (var i = 0; i < 3; i++) {
+					oData[cc + i] = mid[i];
+					lt[i] = 0;
+					mid[i] = 0;
+					for (var n = 0; n < 256; n++) {
+						lt[i] += th[i][n];
+						if (lt[i] >= half) {
+							mid[i] = n;
+							break;
 						}
 					}
 				}
+			}
+			//Update colum histograms
+			for (var xx = 0; xx < width; xx++) {
+				var c1 = g.edge(xx, y - radius, width, height);
+				var c2 = g.edge(xx, y + radius + 1, width, height);
 				for (var i = 0; i < 3; i++) {
-					pixels[i].sort(comp);
-					var sum = 0;
-					for (var j = 0; j < mid.length; j++) {
-						sum += pixels[i][mid[j]];
-					}
-					this.data[cur + i] = sum / mid.length;
+					hs[xx][i][data[c1 + i]] -= 1;
+					hs[xx][i][data[c2 + i]] += 1;
 				}
 			}
 		}
