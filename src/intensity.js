@@ -1,4 +1,5 @@
 (function (g) {
+	'use strict';
 	g.ImageData.prototype.gray = function () {
 		var data = this.data;
 		for (var i = 0; i < data.length; i += 4) {

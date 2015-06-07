@@ -1,5 +1,5 @@
 (function (g) {
-
+	'use strict';
 	g.ImageData.prototype.histogram = function () {
 		if (!this.__synchronized) {
 			this.updateHSI();

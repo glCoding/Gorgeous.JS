@@ -1,4 +1,5 @@
 (function (g) {
+	'use strict';
 	function rangeTest(l, t, w, h, width, height) {
 		l = l || 0;
 		t = t || 0;

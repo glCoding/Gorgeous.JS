@@ -1,5 +1,5 @@
 (function (g) {
-
+	'use strict';
 	g.register('Emboss', [
 		-1, -1, 0,
 		-1, 0, 1,

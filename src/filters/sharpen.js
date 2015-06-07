@@ -1,5 +1,5 @@
 (function (g) {
-
+	'use strict';
 	g.register('Sharpen', [
 		-1, -1, -1,
 		-1, 9, -1,

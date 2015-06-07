@@ -1,5 +1,5 @@
 (function (g) {
-
+	'use strict';
 	g.ImageData.prototype.updateHSI = function () {
 		var length = this.data.length;
 		var data = this.data;

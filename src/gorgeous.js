@@ -1,5 +1,6 @@
 var gorgeous = {};
 (function (g) {
+	'use strict';
 	g.loadImage = function (src, callback) {
 		var img = new Image();
 		img.onload = function (e) {
