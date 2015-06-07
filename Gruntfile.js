@@ -8,17 +8,17 @@ module.exports = function(grunt) {
       },
       build: {
         src: [
-          'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
+          'src/gorgeous.js', 'src/ImageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
           'src/histogram.js', 'src/filter.js', 'src/filters/blur.js', 'src/filters/sharpen.js',
-          'src/filters/distort.js'
+          'src/filters/distort.js', 'src/Palette.js'
         ],
         dest: 'build/gorgeous.concat.js'
       },
       test: {
         src: [
-          'src/gorgeous.js', 'src/imageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
+          'src/gorgeous.js', 'src/ImageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
           'src/histogram.js', 'src/filter.js', 'src/filters/blur.js', 'src/filters/sharpen.js',
-          'src/filters/distort.js'
+          'src/filters/distort.js', 'src/Palette.js'
         ],
         dest: 'build/gorgeous.js'
       }
