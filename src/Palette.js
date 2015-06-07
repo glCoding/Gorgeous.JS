@@ -7,7 +7,7 @@
 	//Although g.ImageData itself can make spatial transformation,
 	//the transform in this layer will not sync to the g.ImageData.
 	//So we could make high-quality image and also get a better performance.
-	
+	//
 	g.Palette = function (width, height) {
 		if (this instanceof g.Palette) {
 			return new g.Palette(width, height);
