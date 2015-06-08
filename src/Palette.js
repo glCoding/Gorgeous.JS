@@ -9,7 +9,7 @@
 	//So we could make high-quality image and also get a better performance.
 	//
 	g.Palette = function (width, height) {
-		if (this instanceof g.Palette) {
+		if (!(this instanceof g.Palette)) {
 			return new g.Palette(width, height);
 		} else {
 			this.layers = [];
@@ -19,9 +19,28 @@
 
 	g.Palette.prototype.draw = function () {
 		//For imd in layers, draw it with its binding properties.
+		var self = this;
+		this.layers.forEach(function (layer) {
+			if (layer.visible) {
+				self.view.putImageData(layer.imd.nativeImageData, layer.pleft, layer.ptop, layer.left, layer.top, layer.width, layer.height);
+			}
+		});
+		return this;
 	};
 
-	g.Palette.prototype.append = function (imd, left, top, name) {
+	g.Palette.prototype.getDataURL = function () {
+		return this.draw().view.canvas.toDataURL();
+	};
+	
+	g.Palette.prototype.getImage = function (callback) {
+		return g.loadImage(this.getDataURL(), function (img) {
+			if (typeof callback === 'function') {
+				callback(img);
+			}
+		});
+	};
+
+	g.Palette.prototype.append = function (imd, pleft, ptop, left, top, width, height, name) {
 		var rimd;
 		if (!name) {
 			name = 'Layer ' + this.layers.length;
@@ -31,18 +50,29 @@
 		} else {
 			rimd = imd;
 		}
+		pleft = pleft || 0;
+		ptop = ptop || 0;
+		left = left || 0;
+		top = top || 0;
+		width = width || rimd.width;
+		height = height || rimd.height;
 		this.layers.push({
 			id: this.layers.length,
 			name: name,
 			imd: rimd,
+			pleft: pleft,
+			ptop: ptop,
 			left: left,
 			top: top,
+			width: width,
+			height: height,
 			visible: true
 			//will add anchor & rotation here
 			//will add size factor here
 			//will add alpha here
 		});
 		this.draw();
+		return this;
 	};
 	
 	g.Palette.prototype.remove = function (id) {
@@ -50,6 +80,7 @@
 			this.splice(id, 1);
 		}
 		this.draw();
+		return this;
 	}
 
 } (gorgeous));
