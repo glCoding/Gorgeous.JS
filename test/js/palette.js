@@ -1,6 +1,6 @@
 //Test:Palette Test
 var g = gorgeous;
-
+//fix heroku
 Test(
 	['Palette & draw', function (tools) {
 		waterfall([
