@@ -18,11 +18,11 @@
 	};
 
 	g.Palette.prototype.draw = function () {
-		//For imd in layers, draw it with its binding properties.
 		var self = this;
 		this.layers.forEach(function (layer) {
 			if (layer.visible) {
-				self.view.putImageData(layer.imd.nativeImageData, layer.pleft, layer.ptop, layer.left, layer.top, layer.width, layer.height);
+				self.view.putImageData(layer.imd.nativeImageData, layer.pleft, layer.ptop,
+					layer.left, layer.top, layer.width, layer.height);
 			}
 		});
 		return this;
@@ -78,6 +78,8 @@
 	g.Palette.prototype.remove = function (id) {
 		if (this.layers[id]) {
 			this.splice(id, 1);
+		} else {
+			throw new Error('no such id: ', id);
 		}
 		this.draw();
 		return this;
