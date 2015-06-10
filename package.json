@@ -1,6 +1,6 @@
 {
   "name": "Gorgeous.JS",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A JavaScript Library for Digital Image Processing.",
   "main": "index.js",
   "scripts": {

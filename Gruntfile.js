@@ -1,5 +1,9 @@
 module.exports = function(grunt) {
-
+  var srcfiles = [
+          'src/gorgeous.js', 'src/ImageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
+          'src/histogram.js', 'src/filter.js', 'src/filters/blur.js', 'src/filters/sharpen.js',
+          'src/filters/distort.js', 'src/Palette.js'
+        ];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
@@ -7,19 +11,11 @@ module.exports = function(grunt) {
         separator: ';\n',
       },
       build: {
-        src: [
-          'src/gorgeous.js', 'src/ImageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
-          'src/histogram.js', 'src/filter.js', 'src/filters/blur.js', 'src/filters/sharpen.js',
-          'src/filters/distort.js', 'src/Palette.js'
-        ],
+        src: srcfiles,
         dest: 'build/gorgeous.concat.js'
       },
       test: {
-        src: [
-          'src/gorgeous.js', 'src/ImageData.js', 'src/hsi.js', 'src/pixels.js', 'src/intensity.js',
-          'src/histogram.js', 'src/filter.js', 'src/filters/blur.js', 'src/filters/sharpen.js',
-          'src/filters/distort.js', 'src/Palette.js'
-        ],
+        src: srcfiles,
         dest: 'build/gorgeous.js'
       }
     },
