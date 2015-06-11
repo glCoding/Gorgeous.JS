@@ -57,13 +57,13 @@
 			return this;
 		};
 		pixels.every = function (test, fail) {
-			if (!(test instanceof Function)) {
+			if (!(typeof test === 'function')) {
 				return false;
 			}
 			for (var y = this.top; y < this.bottom; y++) {
 				for (var x = this.left; x < this.right; x++) {
 					if (!test(this[x][y], x, y)) {
-						if (fail instanceof Function) {
+						if (typeof fail === 'function') {
 							fail(this[x][y], x, y);
 						}
 						return false;

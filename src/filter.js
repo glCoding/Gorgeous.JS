@@ -77,7 +77,7 @@
 				};
 			}
 			g.kernels[name] = g.kernels[kernel];
-		} else if (kernel instanceof Function) {
+		} else if (typeof kernel === 'function') {
 			g.kernels[name] = kernel;
 		} else if (kernel instanceof Array && typeof kernel[0] === 'string') {
 			g.kernels[name] = (function (ks) {
@@ -101,13 +101,13 @@
 		} else {
 			name = preprocessFilterName(name);
 			var kernel = g.kernels[name];
-			if (kernel instanceof Function) {
+			if (typeof kernel === 'function') {
 				kernel.apply(this, Array.prototype.slice.call(arguments, 1));
 				this.pushChange();
 			} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
 				g.convolution(this.data, this.width, this.height, kernel);
 				this.pushChange();
-			} else if (this[name] instanceof Function) {
+			} else if (typeof this[name] === 'function') {
 				this[name].apply(this, Array.prototype.slice.call(arguments, 1));
 			} else {
 				throw new Error('no such filter.');

@@ -44,7 +44,7 @@
 		var hsiData = self.hsiData;
 		var imd = new g.ImageData(self);
 		var data = imd.data;
-		if (!(ops instanceof Function)) {
+		if (!(typeof ops === 'function')) {
 			throw new Error('need operations.');
 		}
 		for (var i = 0; i < data.length; i += 4) {
