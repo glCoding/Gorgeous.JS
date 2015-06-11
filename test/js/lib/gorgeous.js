@@ -249,7 +249,7 @@ var gorgeous = {};
 		var hsiData = self.hsiData;
 		var imd = new g.ImageData(self);
 		var data = imd.data;
-		if (!(ops instanceof Function)) {
+		if (!(typeof ops === 'function')) {
 			throw new Error('need operations.');
 		}
 		for (var i = 0; i < data.length; i += 4) {
@@ -370,13 +370,13 @@ var gorgeous = {};
 			return this;
 		};
 		pixels.every = function (test, fail) {
-			if (!(test instanceof Function)) {
+			if (!(typeof test === 'function')) {
 				return false;
 			}
 			for (var y = this.top; y < this.bottom; y++) {
 				for (var x = this.left; x < this.right; x++) {
 					if (!test(this[x][y], x, y)) {
-						if (fail instanceof Function) {
+						if (typeof fail === 'function') {
 							fail(this[x][y], x, y);
 						}
 						return false;
@@ -662,7 +662,7 @@ var gorgeous = {};
 				};
 			}
 			g.kernels[name] = g.kernels[kernel];
-		} else if (kernel instanceof Function) {
+		} else if (typeof kernel === 'function') {
 			g.kernels[name] = kernel;
 		} else if (kernel instanceof Array && typeof kernel[0] === 'string') {
 			g.kernels[name] = (function (ks) {
@@ -686,13 +686,13 @@ var gorgeous = {};
 		} else {
 			name = preprocessFilterName(name);
 			var kernel = g.kernels[name];
-			if (kernel instanceof Function) {
+			if (typeof kernel === 'function') {
 				kernel.apply(this, Array.prototype.slice.call(arguments, 1));
 				this.pushChange();
 			} else if (kernel instanceof Array && typeof kernel[0] === 'number') {
 				g.convolution(this.data, this.width, this.height, kernel);
 				this.pushChange();
-			} else if (this[name] instanceof Function) {
+			} else if (typeof this[name] === 'function') {
 				this[name].apply(this, Array.prototype.slice.call(arguments, 1));
 			} else {
 				throw new Error('no such filter.');
@@ -944,11 +944,11 @@ var gorgeous = {};
 	};
 
 	g.Palette.prototype.draw = function () {
-		//For imd in layers, draw it with its binding properties.
 		var self = this;
 		this.layers.forEach(function (layer) {
 			if (layer.visible) {
-				self.view.putImageData(layer.imd.nativeImageData, layer.pleft, layer.ptop, layer.left, layer.top, layer.width, layer.height);
+				self.view.putImageData(layer.imd.nativeImageData, layer.pleft, layer.ptop,
+					layer.left, layer.top, layer.width, layer.height);
 			}
 		});
 		return this;
@@ -1004,6 +1004,8 @@ var gorgeous = {};
 	g.Palette.prototype.remove = function (id) {
 		if (this.layers[id]) {
 			this.splice(id, 1);
+		} else {
+			throw new Error('no such id: ', id);
 		}
 		this.draw();
 		return this;
